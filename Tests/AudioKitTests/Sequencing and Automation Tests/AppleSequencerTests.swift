@@ -123,7 +123,8 @@ class AppleSequencerTests: XCTestCase {
         _ = seq.newTrack()
         seq.addTimeSignatureEvent(at: 8.0,
                                   timeSignature: TimeSignature(topValue: 7,
-                                                               bottomValue: TimeSignature.TimeSignatureBottomValue.eight))
+                                                               bottomValue: TimeSignature.TimeSignatureBottomValue
+                                                                   .eight))
 
         XCTAssertEqual(seq.allTimeSignatureEvents.count, 1)
         seq.setLength(Duration(beats: 4.0))
@@ -688,29 +689,29 @@ class AppleSequencerTests: XCTestCase {
     }
 
     #if os(macOS) // For some reason failing on iOS and tvOS
-    func testChords() {
-        let url = Bundle.module.url(forResource: "chords", withExtension: "mid", subdirectory: "TestResources")!
-        seq.loadMIDIFile(fromURL: url)
+        func testChords() {
+            let url = Bundle.module.url(forResource: "chords", withExtension: "mid", subdirectory: "TestResources")!
+            seq.loadMIDIFile(fromURL: url)
 
-        var eventCount = 0
-        let expectedEvents = 24
-        let expect = XCTestExpectation(description: "wait for callback")
+            var eventCount = 0
+            let expectedEvents = 24
+            let expect = XCTestExpectation(description: "wait for callback")
 
-        let inst = MIDICallbackInstrument(midiInputName: "test") { byte0, byte1, byte2 in
-            print("received midi \(byte0), \(byte1), \(byte2)")
-            eventCount += 1
-            if eventCount == expectedEvents {
-                expect.fulfill()
+            let inst = MIDICallbackInstrument(midiInputName: "test") { byte0, byte1, byte2 in
+                print("received midi \(byte0), \(byte1), \(byte2)")
+                eventCount += 1
+                if eventCount == expectedEvents {
+                    expect.fulfill()
+                }
             }
+
+            seq.setGlobalMIDIOutput(inst.midiIn)
+            seq.play()
+
+            wait(for: [expect], timeout: 5.0)
+
+            XCTAssertEqual(eventCount, expectedEvents)
         }
-
-        seq.setGlobalMIDIOutput(inst.midiIn)
-        seq.play()
-
-        wait(for: [expect], timeout: 5.0)
-
-        XCTAssertEqual(eventCount, expectedEvents)
-    }
     #endif
 
     // MARK: - helper functions
@@ -756,7 +757,11 @@ extension AppleSequencer {
         return url!
     }
 
-    func iterateMusicTrack(_ track: MusicTrack, midiEventHandler: (MusicEventIterator, MusicTimeStamp, MusicEventType, UnsafeRawPointer?, UInt32, inout Bool) -> Void) {
+    func iterateMusicTrack(
+        _ track: MusicTrack,
+        midiEventHandler: (MusicEventIterator, MusicTimeStamp, MusicEventType, UnsafeRawPointer?, UInt32, inout Bool)
+            -> Void
+    ) {
         var tempIterator: MusicEventIterator?
         NewMusicEventIterator(track, &tempIterator)
         guard let iterator = tempIterator else {

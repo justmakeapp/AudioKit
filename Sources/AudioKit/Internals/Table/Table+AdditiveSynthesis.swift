@@ -33,9 +33,8 @@ public extension Table {
     ///   - octaveStepSize: Octave step size as a multiplier, default 1.
     /// - Returns: Array of frequencies and the associated maximum harmonic value
     class func harmonicPitchRange(rootFrequency: Double = 8.175_798_915_643_75,
-                                  octaveStepSize: Double = 1) -> [(Double, Int)]
-    {
-        let nyquist = 22050.0
+                                  octaveStepSize: Double = 1) -> [(Double, Int)] {
+        let nyquist = 22_050.0
         var octave = 0.0
         var retVal = [(Double, Int)]()
         while rootFrequency * pow(2, octave) < nyquist {
@@ -75,10 +74,9 @@ public extension Table {
     ///   - wavetableCount: The number of wavetables from which to interpolate from f0 to f1
     ///
     class func harmonicFrequencyRange(f0: Double = 130.812_782_650_3,
-                                      f1: Double = 2093.004_522_404_8,
-                                      wavetableCount: Int = 12) -> [(Double, Int)]
-    {
-        let nyquist = 22050.0
+                                      f1: Double = 2_093.004_522_404_8,
+                                      wavetableCount: Int = 12) -> [(Double, Int)] {
+        let nyquist = 22_050.0
         var retVal = [(Double, Int)]()
         for i in 0 ..< wavetableCount {
             var harmonic = 1
@@ -106,7 +104,7 @@ public extension Table {
     /// Parameters:
     ///   - harmonicCount: the number of harmonics to synthesize
     ///   - clear: will clear the table first
-    func sawtooth(harmonicCount: Int = 1024, clear: Bool = true) {
+    func sawtooth(harmonicCount: Int = 1_024, clear: Bool = true) {
         phase = 0
 
         if clear {
@@ -121,7 +119,8 @@ public extension Table {
 
         for h in 1 ... harmonicCount {
             for i in indices {
-                self[i] += Float(coefficient(h) * sin(Float(h) * 2.0 * 3.14_159_265 * Float(i + phaseOffset) / Float(count)))
+                self[i] +=
+                    Float(coefficient(h) * sin(Float(h) * 2.0 * 3.14_159_265 * Float(i + phaseOffset) / Float(count)))
             }
         }
     }
@@ -130,7 +129,7 @@ public extension Table {
     /// Parameters:
     ///   - harmonicCount: the number of harmonics to synthesize
     ///   - clear: will clear the table first
-    func square(harmonicCount: Int = 1024, clear: Bool = true) {
+    func square(harmonicCount: Int = 1_024, clear: Bool = true) {
         phase = 0
 
         if clear {
@@ -145,7 +144,8 @@ public extension Table {
 
         for h in 1 ... harmonicCount {
             for i in indices {
-                self[i] += Float(coefficient(h) * sin(Float(h) * 2.0 * 3.14_159_265 * Float(i + phaseOffset) / Float(count)))
+                self[i] +=
+                    Float(coefficient(h) * sin(Float(h) * 2.0 * 3.14_159_265 * Float(i + phaseOffset) / Float(count)))
             }
         }
     }
@@ -154,7 +154,7 @@ public extension Table {
     /// Parameters:
     ///   - harmonicCount: the number of harmonics to synthesize
     ///   - clear: will clear the table first
-    func triangle(harmonicCount: Int = 1024, clear: Bool = true) {
+    func triangle(harmonicCount: Int = 1_024, clear: Bool = true) {
         phase = 0
 
         if clear {
@@ -179,7 +179,8 @@ public extension Table {
 
         for h in 1 ... harmonicCount {
             for i in indices {
-                self[i] += Float(coefficient(h) * sin(Float(h) * 2.0 * 3.14_159_265 * Float(i + phaseOffset) / Float(count)))
+                self[i] +=
+                    Float(coefficient(h) * sin(Float(h) * 2.0 * 3.14_159_265 * Float(i + phaseOffset) / Float(count)))
             }
         }
     }
@@ -189,7 +190,7 @@ public extension Table {
     /// Parameters:
     ///   - harmonicCount: the number of harmonics to synthesize
     ///   - period: float on (0,1) for the range above 0
-    func pwm(harmonicCount: Int = 1024, period: Float = 1 / 8) {
+    func pwm(harmonicCount: Int = 1_024, period: Float = 1 / 8) {
         phase = 0
 
         let t: Float = 1
@@ -203,7 +204,8 @@ public extension Table {
         }
 
         let coefficient = { (harmonic: Int) -> Float in
-            let c: Float = ((2.0 * a) / (Float(harmonic) * 3.14_159_265)) * sin(Float(Float(harmonic) * 3.14_159_265 * d))
+            let c: Float = ((2.0 * a) / (Float(harmonic) * 3.14_159_265)) *
+                sin(Float(Float(harmonic) * 3.14_159_265 * d))
             return c
         }
 
@@ -212,7 +214,8 @@ public extension Table {
 
         for h in 1 ... harmonicCount {
             for i in indices {
-                let x = Float(coefficient(h) * cos(Float(h) * 2.0 * 3.14_159_265 * Float(i + phaseOffset) / Float(count)))
+                let x =
+                    Float(coefficient(h) * cos(Float(h) * 2.0 * 3.14_159_265 * Float(i + phaseOffset) / Float(count)))
                 let index = (i + sampleOffset) % count
                 self[index] += x
             }
@@ -360,7 +363,7 @@ public extension Table {
     /// Parameters:
     ///   - signal: large array of floating point values
     ///   - tableLength: number of floating point values to be stored per table
-    class func chopAudioToTables(signal: [Float], tableLength: Int = 2048) -> [Table] {
+    class func chopAudioToTables(signal: [Float], tableLength: Int = 2_048) -> [Table] {
         let sampleCount = signal.count
         let outputTableCount = sampleCount / tableLength
         var outputTables: [Table] = []
@@ -378,7 +381,7 @@ public extension Table {
     ///   - url: URL to audio file
     ///   - tableLength: number of floating point value samples per table (Default: 2048)
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    class func createWavetableArray(_ url: URL, tableLength: Int = 2048) -> [Table] {
+    class func createWavetableArray(_ url: URL, tableLength: Int = 2_048) -> [Table] {
         if let audioInformation = loadAudioSignal(audioURL: url) {
             let signal = audioInformation.signal
             let tables = Table.chopAudioToTables(signal: signal, tableLength: tableLength)

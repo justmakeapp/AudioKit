@@ -1,12 +1,10 @@
 // Copyright AudioKit. All Rights Reserved. Revision History at http://github.com/AudioKit/AudioKit/
 
-import XCTest
 import AudioKit
+import XCTest
 
 class RawDataTapTests: XCTestCase {
-
     func testRawDataTap() throws {
-
         let engine = AudioEngine()
         let osc = PlaygroundOscillator()
         engine.output = osc
@@ -18,7 +16,7 @@ class RawDataTapTests: XCTestCase {
             allData += data
         }
 
-        osc.install(tap: tap, bufferSize: 1024)
+        osc.install(tap: tap, bufferSize: 1_024)
 
         osc.amplitude = 0
         osc.start()
@@ -30,7 +28,6 @@ class RawDataTapTests: XCTestCase {
     }
 
     func testRawDataTapTask() throws {
-
         let engine = AudioEngine()
         let osc = PlaygroundOscillator()
         engine.output = osc
@@ -48,7 +45,7 @@ class RawDataTapTests: XCTestCase {
                 allData += data
             }
 
-            osc.install(tap: tap, bufferSize: 1024)
+            osc.install(tap: tap, bufferSize: 1_024)
         }
 
         // Lock up the main thread instead of servicing the runloop.
@@ -59,7 +56,5 @@ class RawDataTapTests: XCTestCase {
         // Expectation should have been already fulfilled by
         // the background Task.
         wait(for: [dataExpectation], timeout: 0)
-
     }
-
 }

@@ -4,10 +4,11 @@ public extension AVAudioEnvironmentNode {
     /// Make a connection without breaking other connections.
     /// Makes sure the Mixer3D connects to the EnviromentalNode In **MONO**
     func connectMixer3D(_ input: AVAudioNode, format: AVAudioFormat) {
-        if let engine = engine,
+        if let engine,
            let monoFormat = AVAudioFormat(
-            standardFormatWithSampleRate: Settings.audioFormat.sampleRate,
-            channels: 1) {
+               standardFormatWithSampleRate: Settings.audioFormat.sampleRate,
+               channels: 1
+           ) {
             var points = engine.outputConnectionPoints(for: input, outputBus: 0)
             if points.contains(where: { $0.node === self }) { return }
             points.append(AVAudioConnectionPoint(node: self, bus: nextAvailableInputBus))
@@ -25,7 +26,7 @@ public extension AVAudioEnvironmentNode {
 
 /**
  AudioKit wrapper of Apple's AVAudioEnvironmentNode Node.
- 
+
  This is the object which does the rendering of 3D positional sound,
  and allow mamipulation of the listener position/orientation.
  All sound sources which you want rendered in 3D **MUST** connect to the EnvironmentalNode in MONO,
@@ -34,9 +35,9 @@ public extension AVAudioEnvironmentNode {
  This class exposes the  methods of AVAudioEnvironmentNode
  needed to position and manipulate propeties of the listener in 3D space,
  as well as the over-all reverb.
- 
+
  - Example: [  Mixer3D -> EnvironmentalNode -> MainMixer]
- 
+
  */
 public class EnvironmentalNode: Node, NamedNode {
     /// The internal avAudioEnvironmentNode node
@@ -46,6 +47,7 @@ public class EnvironmentalNode: Node, NamedNode {
     public var avAudioNode: AVAudioNode {
         avAudioEnvironmentNode
     }
+
     open var name = "(unset)"
     /// The listener’s position in the 3D environment.
     public var listenerPosition: AVAudio3DPoint {
@@ -56,6 +58,7 @@ public class EnvironmentalNode: Node, NamedNode {
             avAudioEnvironmentNode.listenerPosition = newValue
         }
     }
+
     /// The listener’s angular orientation in the environment.
     public var listenerAngularOrientation: AVAudio3DAngularOrientation {
         get {
@@ -65,6 +68,7 @@ public class EnvironmentalNode: Node, NamedNode {
             avAudioEnvironmentNode.listenerAngularOrientation = newValue
         }
     }
+
     /// The listener’s angular orientation in the environment.
     public var listenerVectorOrientation: AVAudio3DVectorOrientation {
         get {
@@ -74,18 +78,17 @@ public class EnvironmentalNode: Node, NamedNode {
             avAudioEnvironmentNode.listenerVectorOrientation = newValue
         }
     }
+
     /// The distance attenuation parameters for the environment (read only)
     public var distanceAttenuationParameters: AVAudioEnvironmentDistanceAttenuationParameters {
-        {
-            return avAudioEnvironmentNode.distanceAttenuationParameters
-        }()
+        avAudioEnvironmentNode.distanceAttenuationParameters
     }
+
     /// The reverb parameters for the environment. (get only)
     public var reverbParameters: AVAudioEnvironmentReverbParameters {
-        {
-            return avAudioEnvironmentNode.reverbParameters
-        }()
+        avAudioEnvironmentNode.reverbParameters
     }
+
     /// The  blend of reverb-processed (also called dry and wet) audio for playback of the audio source.
     public var reverbBlend: Float {
         get {
@@ -95,6 +98,7 @@ public class EnvironmentalNode: Node, NamedNode {
             avAudioEnvironmentNode.reverbBlend = newValue
         }
     }
+
     /// The mixer’s output volume.
     public var outputVolume: Float {
         get {
@@ -104,6 +108,7 @@ public class EnvironmentalNode: Node, NamedNode {
             avAudioEnvironmentNode.outputVolume = newValue
         }
     }
+
     /// The type of output hardware.
     public var outputType: AVAudioEnvironmentOutputType {
         get {
@@ -113,12 +118,12 @@ public class EnvironmentalNode: Node, NamedNode {
             avAudioEnvironmentNode.outputType = newValue
         }
     }
+
     /// An array of rendering algorithms applicable to the environment node. (read only)
     public var applicableRenderingAlgorithms: [NSNumber] {
-        {
-            return avAudioEnvironmentNode.applicableRenderingAlgorithms
-        }()
+        avAudioEnvironmentNode.applicableRenderingAlgorithms
     }
+
     /// The type of rendering algorithm the mixer uses.
     public var renderingAlgorithm: AVAudio3DMixingRenderingAlgorithm {
         get {
@@ -128,30 +133,31 @@ public class EnvironmentalNode: Node, NamedNode {
             avAudioEnvironmentNode.renderingAlgorithm = newValue
         }
     }
+
     /// An unused input bus.
     public var nextAvailableInputBus: AVAudioNodeBus {
-        {
-            return avAudioEnvironmentNode.nextAvailableInputBus
-        }()
+        avAudioEnvironmentNode.nextAvailableInputBus
     }
-    public init() {	}
+
+    public init() {}
     /**
      In order to control the source's 3D properties the single going into the avAudioEnvironmentNode
      must conform to AVAudioMixing (specifically AVAudio3DMixing).
-     
+
      To simplify keeping thing AudioKit easy, you can only connect Mixer3D
      object to EnvironmentalNode with this function.
      Therefore to connect any non-mixer3D object,
      you must first connect the object to a Mixer3D instance,
      and then that instance to the EnvironmentalNode.
-     
+
      - Attention: Each object you want to poition in 3D Space must have its own Mixer3D instance.
-     
+
      - Parameter mixer3D: Mixer3D
      */
     public func connect(mixer3D: Mixer3D) {
         inputs.append(mixer3D)
     }
+
     /// Remove all inputs from the EnvironmentalNode
     public func removeInputs() {
         guard connections.isNotEmpty else { return }

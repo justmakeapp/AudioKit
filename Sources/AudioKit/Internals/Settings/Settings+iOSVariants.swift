@@ -62,7 +62,8 @@
         /// (AVAudioSessionErrorCodeCannotStartPlaying aka error code 561015905) when a route/category change causes
         /// AudioEngine to attempt to start while the app is not active and background audio is not supported.
         static let appSupportsBackgroundAudio = (
-            Bundle.main.infoDictionary?["UIBackgroundModes"] as? [String])?.contains("audio") ?? false
+            Bundle.main.infoDictionary?["UIBackgroundModes"] as? [String]
+        )?.contains("audio") ?? false
 
         /// Shortcut for AVAudioSession.sharedInstance()
         static let session = AVAudioSession.sharedInstance()
@@ -74,8 +75,7 @@
 
         /// Set the audio session type
         static func setSession(category: SessionCategory,
-                               with options: AVAudioSession.CategoryOptions = []) throws
-        {
+                               with options: AVAudioSession.CategoryOptions = []) throws {
             guard Settings.disableAVAudioSessionCategoryManagement == false else { return }
 
             try session.setCategory(category.avCategory, mode: .default, options: options)

@@ -6,36 +6,36 @@ import AVFoundation
 public class MultiSegmentAudioPlayer: Node {
     /// Nodes providing input to this node.
     public var connections: [Node] { [] }
-    
+
     /// The underlying player node
     public private(set) var playerNode = AVAudioPlayerNode()
 
     /// The output of the AudioPlayer and provides sample rate conversion if needed
     public private(set) var mixerNode = AVAudioMixerNode()
-    
+
     /// The internal AVAudioEngine AVAudioNode
     public var avAudioNode: AVAudioNode { return mixerNode }
-    
+
     /// Just the playerNode's property, values above 1 will have gain applied
     public var volume: AUValue {
         get { playerNode.volume }
         set { playerNode.volume = newValue }
     }
-    
+
     var engine: AVAudioEngine? { mixerNode.engine }
-    
+
     public init() {}
-    
+
     /// starts the player
     public func play() {
         playerNode.play()
     }
-    
+
     /// stops the player
     public func stop() {
         playerNode.stop()
     }
-    
+
     /// schedules an array of segments of audio files and then starts the player
     /// - Parameters:
     ///     - audioSegments: segments of audio files to be scheduled for playback
@@ -52,7 +52,7 @@ public class MultiSegmentAudioPlayer: Node {
                          processingDelay: processingDelay)
         play()
     }
-    
+
     /// schedules an array of segments of audio files for playback
     /// - Parameters:
     ///     - audioSegments: segments of audio files to be scheduled for playback
@@ -74,17 +74,17 @@ public class MultiSegmentAudioPlayer: Node {
 
             // how long the file will be playing back for in seconds
             let durationToSchedule = segment.fileEndTime - segment.fileStartTime
-            
+
             let endTimeWithRespectToReference = segment.playbackStartTime + durationToSchedule
-            
+
             if endTimeWithRespectToReference <= referenceTimeStamp { continue } // skip the clip if it's already past
 
             // either play right away or schedule for a future time to begin playback
             var whenToPlay = sampleTime.offset(seconds: processingDelay)
-            
+
             // the specific location in the audio file we will start playing from
             var fileStartTime = segment.fileStartTime
-            
+
             if segment.playbackStartTime > referenceTimeStamp {
                 // there's space before we should start playing
                 let offsetSeconds = segment.playbackStartTime - referenceTimeStamp
@@ -93,7 +93,7 @@ public class MultiSegmentAudioPlayer: Node {
                 // adjust for playing somewhere in the middle of a segment
                 fileStartTime = segment.fileStartTime + referenceTimeStamp - segment.playbackStartTime
             }
-            
+
             // skip if invalid sample rate or fileStartTime (prevents crash)
             let sampleRate = segment.audioFile.fileFormat.sampleRate
             guard sampleRate.isFinite else { continue }
@@ -122,9 +122,10 @@ extension MultiSegmentAudioPlayer: HasInternalConnections {
     var isPlayerConnectedToMixerNode: Bool {
         var iBus = 0
         let engine = playerNode.engine
-        if let engine = engine {
+        if let engine {
             while iBus < playerNode.numberOfOutputs {
-                for playercp in engine.outputConnectionPoints(for: playerNode, outputBus: iBus) where playercp.node == mixerNode {
+                for playercp in engine.outputConnectionPoints(for: playerNode, outputBus: iBus)
+                    where playercp.node == mixerNode {
                     return true
                 }
                 iBus += 1
@@ -135,7 +136,7 @@ extension MultiSegmentAudioPlayer: HasInternalConnections {
 
     /// called in the connection chain to attach the playerNode
     public func makeInternalConnections() {
-        guard let engine = engine else {
+        guard let engine else {
             Log("Engine is nil", type: .error)
             return
         }

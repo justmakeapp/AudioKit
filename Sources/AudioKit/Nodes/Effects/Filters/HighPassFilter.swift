@@ -21,8 +21,8 @@ public class HighPassFilter: Node {
         identifier: "cutoffFrequency",
         name: "Cutoff Frequency",
         address: AUParameterAddress(kHipassParam_CutoffFrequency),
-        defaultValue: 6900,
-        range: 10 ... 22050,
+        defaultValue: 6_900,
+        range: 10 ... 22_050,
         unit: .hertz
     )
 

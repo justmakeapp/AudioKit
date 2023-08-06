@@ -29,7 +29,6 @@ public enum DisconnectStrategy {
 }
 
 extension Node {
-
     func disconnect(input: Node, strategy: DisconnectStrategy) {
         switch strategy {
         case .recursive: disconnectAndDetachIfLast(input: input)

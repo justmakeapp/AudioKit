@@ -2,9 +2,9 @@
 
 import Foundation
 
-extension MIDIByte {
+public extension MIDIByte {
     /// This limits the range to be from 0 to 127
-    func lower7bits() -> MIDIByte {
+    internal func lower7bits() -> MIDIByte {
         return self & 0x7F
     }
 
@@ -14,25 +14,25 @@ extension MIDIByte {
     /// it sounds like your are referring to the highest bit and the lowest bit
 
     /// This limits the range to be from 0 to 16
-    public var lowBit: MIDIByte {
+    var lowBit: MIDIByte {
         return self & 0xF
     }
 
     /// High Bit
-    public var highBit: MIDIByte {
+    var highBit: MIDIByte {
         return self >> 4
     }
 
     /// Value as traditional hex string
-    public var hex: String {
+    var hex: String {
         let st = String(format: "%02X", self)
         return "0x\(st)"
     }
 }
 
-extension Array where Element == MIDIByte {
+extension [MIDIByte] {
     var hex: String {
-        return self.map({ $0.hex.replacingOccurrences(of: "0x", with: "") }).joined(separator: "")
+        return self.map { $0.hex.replacingOccurrences(of: "0x", with: "") }.joined(separator: "")
     }
 
     var integerValue: Int? {

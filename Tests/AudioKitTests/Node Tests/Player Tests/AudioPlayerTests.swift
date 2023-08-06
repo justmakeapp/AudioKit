@@ -453,7 +453,7 @@ class AudioPlayerTests: XCTestCase {
         }
 
         player.play()
-        player.seek(time: 6.0)  // player.duration < 5.5
+        player.seek(time: 6.0) // player.duration < 5.5
         audio.append(engine.render(duration: 1.0))
         XCTAssert(player.status == .stopped)
 
@@ -461,7 +461,7 @@ class AudioPlayerTests: XCTestCase {
         audio.append(engine.render(duration: 1.0))
         XCTAssert(player.status == .playing)
 
-        player.seek(time: -2.0)  // currentTime == 1.0
+        player.seek(time: -2.0) // currentTime == 1.0
         audio.append(engine.render(duration: 1.0))
         XCTAssert(player.status == .stopped)
         testMD5(audio)

@@ -8,7 +8,7 @@ public struct MIDIFileChunkEvent {
     let timeFormat: MIDITimeFormat
     let timeDivision: Int
     let runningStatus: MIDIStatus?
-    let timeOffset: Int //accumulated time from previous events
+    let timeOffset: Int // accumulated time from previous events
 
     init(data: [MIDIByte],
          timeFormat: MIDITimeFormat,
@@ -70,7 +70,7 @@ public struct MIDIFileChunkEvent {
     var typeIndex: Int? {
         if data.count > timeLength {
             if data[timeLength] == 0xFF,
-                data.count > timeLength + 1 { //is Meta-Event
+               data.count > timeLength + 1 { // is Meta-Event
                 return timeLength + 1
             } else if MIDIStatus(byte: data[timeLength]) != nil {
                 return timeLength

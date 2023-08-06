@@ -101,7 +101,7 @@ open class AppleSampler: Node {
     /// Handy to set multi-sampled instruments or a drum kit...
     public func loadAudioFiles(_ files: [AVAudioFile]) throws {
         _audioFiles = files
-        let urls = files.map { $0.url }
+        let urls = files.map(\.url)
         try samplerUnit.loadAudioFiles(at: urls)
     }
 
@@ -129,8 +129,7 @@ open class AppleSampler: Node {
     /// half speed (1 octave lower) and so on
     open func play(noteNumber: MIDINoteNumber = 60,
                    velocity: MIDIVelocity = 127,
-                   channel: MIDIChannel = 0)
-    {
+                   channel: MIDIChannel = 0) {
         samplerUnit.startNote(noteNumber, withVelocity: velocity, onChannel: channel)
     }
 

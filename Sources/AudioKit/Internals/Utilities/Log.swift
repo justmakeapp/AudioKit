@@ -36,8 +36,7 @@ public func Log(_ items: Any?...,
                 type: OSLogType = .info,
                 file: String = #file,
                 function: String = #function,
-                line: Int = #line)
-{
+                line: Int = #line) {
     guard Settings.enableLogging else { return }
 
     let fileName = (file as NSString).lastPathComponent

@@ -169,8 +169,7 @@ public extension AUParameterTree {
                                address: AUParameterAddress,
                                range: ClosedRange<AUValue>,
                                unit: AudioUnitParameterUnit,
-                               flags: AudioUnitParameterOptions) -> AUParameter
-    {
+                               flags: AudioUnitParameterOptions) -> AUParameter {
         AUParameterTree.createParameter(withIdentifier: identifier,
                                         name: name,
                                         address: address,
@@ -239,7 +238,8 @@ public extension Double {
     ///   - from source: Current range (Default: 0...1.0)
     ///   - to target: Desired range (Default: 0...1.0)
     func mapped(from source: ClosedRange<Double> = 0 ... 1.0, to target: ClosedRange<Double> = 0 ... 1.0) -> Double {
-        return ((self - source.lowerBound) / (source.upperBound - source.lowerBound)) * (target.upperBound - target.lowerBound) + target.lowerBound
+        return ((self - source.lowerBound) / (source.upperBound - source.lowerBound)) *
+            (target.upperBound - target.lowerBound) + target.lowerBound
     }
 
     /// Returns false if the value is not positive
@@ -258,7 +258,8 @@ public extension CGFloat {
     ///   - from source: Current range (Default: 0...1.0)
     ///   - to target: Desired range (Default: 0...1.0)
     func mapped(from source: ClosedRange<CGFloat> = 0 ... 1.0, to target: ClosedRange<CGFloat> = 0 ... 1.0) -> CGFloat {
-        return ((self - source.lowerBound) / (source.upperBound - source.lowerBound)) * (target.upperBound - target.lowerBound) + target.lowerBound
+        return ((self - source.lowerBound) / (source.upperBound - source.lowerBound)) *
+            (target.upperBound - target.lowerBound) + target.lowerBound
     }
 
     /// Map the value to a new inverted range
@@ -267,7 +268,8 @@ public extension CGFloat {
     /// - Parameters:
     ///   - from source: Current range (Default: 0...1.0)
     ///   - to target: Desired range (Default: 0...1.0)
-    func mappedInverted(from source: ClosedRange<CGFloat> = 0 ... 1.0, to target: ClosedRange<CGFloat> = 0 ... 1.0) -> CGFloat {
+    func mappedInverted(from source: ClosedRange<CGFloat> = 0 ... 1.0,
+                        to target: ClosedRange<CGFloat> = 0 ... 1.0) -> CGFloat {
         return target.upperBound - mapped(from: source, to: target) + target.lowerBound
     }
 
@@ -277,15 +279,18 @@ public extension CGFloat {
     /// - Parameters:
     ///   - from source: Current range (Default: 0...1.0)
     ///   - to target: Desired range (Default: 0...1.0)
-    func mappedLog10(from source: ClosedRange<CGFloat> = 0 ... 1.0, to target: ClosedRange<CGFloat> = 0 ... 1.0) -> CGFloat {
+    func mappedLog10(from source: ClosedRange<CGFloat> = 0 ... 1.0,
+                     to target: ClosedRange<CGFloat> = 0 ... 1.0) -> CGFloat {
         let logN = log10(self)
         let logStart1 = log10(source.lowerBound)
         let logStop1 = log10(source.upperBound)
-        let result = ((logN - logStart1) / (logStop1 - logStart1)) * (target.upperBound - target.lowerBound) + target.lowerBound
+        let result = ((logN - logStart1) / (logStop1 - logStart1)) * (target.upperBound - target.lowerBound) + target
+            .lowerBound
         if result.isNaN {
             return 0.0
         } else {
-            return ((logN - logStart1) / (logStop1 - logStart1)) * (target.upperBound - target.lowerBound) + target.lowerBound
+            return ((logN - logStart1) / (logStop1 - logStart1)) * (target.upperBound - target.lowerBound) + target
+                .lowerBound
         }
     }
 
@@ -295,14 +300,14 @@ public extension CGFloat {
     /// - Parameters:
     ///   - from source: Current range (Default: 0...1.0)
     ///   - to target: Desired range (Default: 0...1.0)
-    func mappedExp(from source: ClosedRange<CGFloat> = 0 ... 1.0, to target: ClosedRange<CGFloat> = 0 ... 1.0) -> CGFloat {
+    func mappedExp(from source: ClosedRange<CGFloat> = 0 ... 1.0,
+                   to target: ClosedRange<CGFloat> = 0 ... 1.0) -> CGFloat {
         let logStart2 = log(target.lowerBound)
         let logStop2 = log(target.upperBound)
         let scale = (logStop2 - logStart2) / (source.upperBound - source.lowerBound)
         return exp(logStart2 + scale * (self - source.lowerBound))
     }
 }
-
 
 public extension Int {
     /// Map the value to a new range
@@ -312,11 +317,12 @@ public extension Int {
     ///   - from source: Current range
     ///   - to target: Desired range (Default: 0...1.0)
     func mapped(from source: ClosedRange<Int>, to target: ClosedRange<CGFloat> = 0 ... 1.0) -> CGFloat {
-        return (CGFloat(self - source.lowerBound) / CGFloat(source.upperBound - source.lowerBound)) * (target.upperBound - target.lowerBound) + target.lowerBound
+        return (CGFloat(self - source.lowerBound) / CGFloat(source.upperBound - source.lowerBound)) *
+            (target.upperBound - target.lowerBound) + target.lowerBound
     }
 }
 
-public extension Array where Element == Float {
+public extension [Float] {
     /// Takes an array of floating point values and down samples it to have a lesser number of samples
     /// Returns an array of downsampled floating point values
     ///

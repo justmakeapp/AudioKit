@@ -20,7 +20,6 @@ public protocol MIDIFileChunk {
 
 /// Default behavior for MIDI FIle Chunks
 public extension MIDIFileChunk {
-
     /// Is valid chunk
     var isValid: Bool { return isTypeValid && isLengthValid }
     /// Is not a valid chunk
@@ -40,12 +39,12 @@ public extension MIDIFileChunk {
 
     /// Type data
     var typeData: [MIDIByte] {
-        return Array(rawData[0..<4])
+        return Array(rawData[0 ..< 4])
     }
 
     /// Length data
     var lengthData: [MIDIByte] {
-        return Array(rawData[4..<8])
+        return Array(rawData[4 ..< 8])
     }
 
     /// Raw data
@@ -79,7 +78,7 @@ public enum MIDIFileChunkType: String {
     /// Initialize with data
     /// - Parameter data: MIDI Byte Array
     init?(data: [MIDIByte]) {
-        let text = String(data.map({ Character(UnicodeScalar($0)) }))
+        let text = String(data.map { Character(UnicodeScalar($0)) })
         self.init(text: text)
     }
 

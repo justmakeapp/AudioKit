@@ -34,8 +34,7 @@ public struct NodeParameterDef {
                 defaultValue: AUValue,
                 range: ClosedRange<AUValue>,
                 unit: AudioUnitParameterUnit,
-                flags: AudioUnitParameterOptions = .default)
-    {
+                flags: AudioUnitParameterOptions = .default) {
         self.identifier = identifier
         self.name = name
         self.address = address
@@ -106,15 +105,15 @@ public class NodeParameter {
     /// Automate to a new value using a ramp.
     public func ramp(to value: AUValue, duration: Float, delay: Float = 0) {
         var delaySamples = AUAudioFrameCount(delay * Float(Settings.sampleRate))
-        if delaySamples > 4096 {
+        if delaySamples > 4_096 {
             Log("Warning: delay longer than 4096, setting to to 4096")
-            delaySamples = 4096
+            delaySamples = 4_096
         }
         if !parameter.flags.contains(.flag_CanRamp) {
             Log("Error: can't ramp parameter \(parameter.displayName)", type: .error)
             return
         }
-        assert(delaySamples < 4096)
+        assert(delaySamples < 4_096)
         let paramBlock = avAudioNode.auAudioUnit.scheduleParameterBlock
         paramBlock(AUEventSampleTimeImmediate + Int64(delaySamples),
                    AUAudioFrameCount(duration * Float(Settings.sampleRate)),
@@ -190,7 +189,7 @@ public class NodeParameter {
 }
 
 /// So we can use NodeParameter with SwiftUI. See Cookbook.
-extension NodeParameter: Identifiable { }
+extension NodeParameter: Identifiable {}
 
 /// Base protocol for any type supported by @Parameter
 public protocol NodeParameterType {

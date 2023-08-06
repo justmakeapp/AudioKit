@@ -57,7 +57,7 @@ public extension AVAudioPCMBuffer {
     struct Peak {
         /// Initialize the peak, to be able to use outside of AudioKit
         public init() {}
-        internal static let min: Float = -10000.0
+        internal static let min: Float = -10_000.0
         /// Time of the peak
         public var time: Double = 0
         /// Frame position of the peak
@@ -189,17 +189,20 @@ public extension AVAudioPCMBuffer {
         let fadeOutPower = linearRamp ? sampleTime / outTime : exp(-log(25) * sampleTime / outTime)
 
         let fadeInBuffer: AVAudioPCMBuffer? = inTime > 0 ? self.extract(from: 0, to: inTime) : nil
-        let fadeOutBuffer: AVAudioPCMBuffer? = outTime > 0 ? self.extract(from: totalDuration - outTime, to: totalDuration) : nil
+        let fadeOutBuffer: AVAudioPCMBuffer? = outTime > 0 ? self.extract(
+            from: totalDuration - outTime,
+            to: totalDuration
+        ) : nil
 
         var gain: Double = 1
 
         // Only FadeIn if inTime was provided
-        if let fadeInBuffer = fadeInBuffer {
+        if let fadeInBuffer {
             gain = 0.01
 
             for i in 0 ..< Int(fadeInBuffer.frameLength) {
                 gain = linearRamp ? gain + fadeInPower : gain * fadeInPower
-                gain = min(max(gain, 0), 1)  // clamp gain between 0 and 1
+                gain = min(max(gain, 0), 1) // clamp gain between 0 and 1
                 for n in 0 ..< Int(fadeInBuffer.format.channelCount) {
                     fadeInBuffer.floatChannelData?[n][i] *= Float(gain)
                 }
@@ -207,12 +210,12 @@ public extension AVAudioPCMBuffer {
         }
 
         // Only FadeOut if outTime was provided
-        if let fadeOutBuffer = fadeOutBuffer {
+        if let fadeOutBuffer {
             gain = 1
 
             for i in 0 ..< Int(fadeOutBuffer.frameLength) {
                 gain = linearRamp ? gain - fadeOutPower : gain * fadeOutPower
-                gain = min(max(gain, 0), 1)  // clamp gain between 0 and 1
+                gain = min(max(gain, 0), 1) // clamp gain between 0 and 1
                 for n in 0 ..< Int(fadeOutBuffer.format.channelCount) {
                     fadeOutBuffer.floatChannelData?[n][i] *= Float(gain)
                 }
@@ -222,7 +225,7 @@ public extension AVAudioPCMBuffer {
         // Create the result buffer by appending fadeIn, middle part of original buffer, and fadeOut
         let resultBuffer = AVAudioPCMBuffer(pcmFormat: self.format, frameCapacity: self.frameCapacity)!
 
-        if let fadeInBuffer = fadeInBuffer {
+        if let fadeInBuffer {
             resultBuffer.append(fadeInBuffer)
         }
 
@@ -230,7 +233,7 @@ public extension AVAudioPCMBuffer {
             resultBuffer.append(self.extract(from: inTime, to: totalDuration - outTime)!)
         }
 
-        if let fadeOutBuffer = fadeOutBuffer {
+        if let fadeOutBuffer {
             resultBuffer.append(fadeOutBuffer)
         }
 

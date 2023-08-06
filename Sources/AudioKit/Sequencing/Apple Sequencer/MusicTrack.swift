@@ -12,7 +12,7 @@ open class MusicTrackManager {
     /// A copy of the original track at init
     open var initMusicTrack: MusicTrack?
 
-    fileprivate var name: String = "Unnamed"
+    private var name: String = "Unnamed"
 
     /// Sequencer this music track is part of
     open var sequencer = AppleSequencer()
@@ -119,9 +119,8 @@ open class MusicTrackManager {
 
         MusicSequenceNewTrack(sequence, &initMusicTrack)
 
-        if let initMusicTrack = initMusicTrack,
-           let internalMusicTrack = internalMusicTrack
-        {
+        if let initMusicTrack,
+           let internalMusicTrack {
             initTrackPointer = UnsafeMutablePointer(initMusicTrack)
             MusicTrackMerge(internalMusicTrack, 0.0, length, initMusicTrack, 0.0)
         }
@@ -426,8 +425,7 @@ open class MusicTrackManager {
                     velocity: MIDIVelocity,
                     position: Duration,
                     duration: Duration,
-                    channel: MIDIChannel = 0)
-    {
+                    channel: MIDIChannel = 0) {
         guard let track = internalMusicTrack else {
             Log("internalMusicTrack does not exist")
             return
@@ -475,8 +473,7 @@ open class MusicTrackManager {
     public func addController(_ controller: MIDIByte,
                               value: MIDIByte,
                               position: Duration,
-                              channel: MIDIChannel = 0)
-    {
+                              channel: MIDIChannel = 0) {
         guard let track = internalMusicTrack else {
             Log("internalMusicTrack does not exist")
             return
@@ -497,8 +494,7 @@ open class MusicTrackManager {
     ///   - channel: MIDI channel for this event
     public func addAftertouch(_ noteNumber: MIDINoteNumber,
                               pressure: MIDIByte,
-                              position: Duration, channel: MIDIChannel = 0)
-    {
+                              position: Duration, channel: MIDIChannel = 0) {
         guard let track = internalMusicTrack else {
             Log("internalMusicTrack does not exist")
             return
@@ -519,8 +515,7 @@ open class MusicTrackManager {
     ///   - channel: MIDI channel for this event
     public func addChannelAftertouch(pressure: MIDIByte,
                                      position: Duration,
-                                     channel: MIDIChannel = 0)
-    {
+                                     channel: MIDIChannel = 0) {
         guard let track = internalMusicTrack else {
             Log("internalMusicTrack does not exist")
             return
@@ -567,10 +562,9 @@ open class MusicTrackManager {
     ///   - position: Where in the sequence to insert pitchbend info (expressed in beats)
     ///   - channel: MIDI channel to insert pitch bend on
     ///
-    public func addPitchBend(_ value: Int = 8192,
+    public func addPitchBend(_ value: Int = 8_192,
                              position: Duration,
-                             channel: MIDIChannel = 0)
-    {
+                             channel: MIDIChannel = 0) {
         guard let track = internalMusicTrack else {
             Log("internalMusicTrack does not exist")
             return
@@ -592,7 +586,7 @@ open class MusicTrackManager {
     ///   - channel: MIDI channel to insert pitch bend reset on
     ///
     public func resetPitchBend(position: Duration, channel: MIDIChannel = 0) {
-        addPitchBend(8192, position: position, channel: channel)
+        addPitchBend(8_192, position: position, channel: channel)
     }
 
     // MARK: Getting data from MusicTrack
@@ -655,7 +649,7 @@ open class MusicTrackManager {
     public func copyOf() -> MusicTrackManager? {
         let copiedTrack = MusicTrackManager()
 
-        guard let internalMusicTrack = internalMusicTrack,
+        guard let internalMusicTrack,
               let copiedInternalTrack = copiedTrack.internalMusicTrack
         else {
             return nil
@@ -668,7 +662,7 @@ open class MusicTrackManager {
     public func resetToInit() {
         var initLengthCopy: Double = initLength
         clear()
-        if let internalMusicTrack = internalMusicTrack, let existingInittrack = initMusicTrack {
+        if let internalMusicTrack, let existingInittrack = initMusicTrack {
             setLength(Duration(beats: initLength))
             _ = MusicTrackSetProperty(existingInittrack,
                                       kSequenceTrackProperty_TrackLength,
@@ -691,8 +685,7 @@ open class MusicTrackManager {
                                                     MusicEventType,
                                                     UnsafeRawPointer?,
                                                     UInt32,
-                                                    inout Bool) -> Void)
-    {
+                                                    inout Bool) -> Void) {
         var tempIterator: MusicEventIterator?
         NewMusicEventIterator(track, &tempIterator)
         guard let iterator = tempIterator else {

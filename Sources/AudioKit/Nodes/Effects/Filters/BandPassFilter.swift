@@ -21,8 +21,8 @@ public class BandPassFilter: Node {
         identifier: "centerFrequency",
         name: "Center Frequency",
         address: AUParameterAddress(kBandpassParam_CenterFrequency),
-        defaultValue: 5000,
-        range: 20 ... 22050,
+        defaultValue: 5_000,
+        range: 20 ... 22_050,
         unit: .hertz
     )
 
@@ -35,7 +35,7 @@ public class BandPassFilter: Node {
         name: "Bandwidth",
         address: AUParameterAddress(kBandpassParam_Bandwidth),
         defaultValue: 600,
-        range: 100 ... 12000,
+        range: 100 ... 12_000,
         unit: .cents
     )
 

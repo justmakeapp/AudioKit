@@ -11,8 +11,7 @@ public extension AudioPlayer {
     @available(*, deprecated, renamed: "schedule(at:)")
     func scheduleBuffer(_ buffer: AVAudioPCMBuffer,
                         at when: AVAudioTime?,
-                        options: AVAudioPlayerNodeBufferOptions = [])
-    {
+                        options: AVAudioPlayerNodeBufferOptions = []) {
         self.buffer = buffer
         isLooping = options == .loops
         schedule(at: when)
@@ -26,8 +25,7 @@ public extension AudioPlayer {
     @available(*, deprecated, renamed: "schedule(at:)")
     func scheduleBuffer(url: URL,
                         at when: AVAudioTime?,
-                        options: AVAudioPlayerNodeBufferOptions = [])
-    {
+                        options: AVAudioPlayerNodeBufferOptions = []) {
         guard let buffer = try? AVAudioPCMBuffer(url: url) else {
             Log("Failed to create buffer", type: .error)
             return
@@ -42,8 +40,7 @@ public extension AudioPlayer {
     ///   - options: Buffer options
     @available(*, deprecated, renamed: "schedule(at:)")
     func scheduleFile(_ file: AVAudioFile,
-                      at when: AVAudioTime?)
-    {
+                      at when: AVAudioTime?) {
         self.file = file
         schedule(at: when)
     }

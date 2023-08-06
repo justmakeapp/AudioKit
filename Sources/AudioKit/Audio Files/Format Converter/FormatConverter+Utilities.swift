@@ -61,8 +61,7 @@ public extension FormatConverter {
         }
 
         if noErr != ExtAudioFileOpenURL(url as CFURL,
-                                        &inputFile)
-        {
+                                        &inputFile) {
             Log("Unable to open", url.lastPathComponent)
             return nil
         }

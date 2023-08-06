@@ -1,15 +1,13 @@
 // Copyright AudioKit. All Rights Reserved. Revision History at http://github.com/AudioKit/AudioKit/
 
-import XCTest
-import AVFAudio
 import AudioKit
+import AVFAudio
+import XCTest
 
 class ManualRenderingTests: XCTestCase {
-
     func testManualRenderingInput() throws {
-
         let frameCount: AVAudioFrameCount = 10
-        let format = AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 2)!
+        let format = AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: 2)!
         let inputBuf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount)!
         let outputBuf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount)!
         inputBuf.frameLength = frameCount
@@ -23,7 +21,7 @@ class ManualRenderingTests: XCTestCase {
                                                       maximumFrameCount: frameCount)
 
         engine.output = engine.input
-        engine.avEngine.inputNode.setManualRenderingInputPCMFormat(format) { frameCount in
+        engine.avEngine.inputNode.setManualRenderingInputPCMFormat(format) { _ in
             inputBuf.audioBufferList
         }
 
@@ -36,7 +34,5 @@ class ManualRenderingTests: XCTestCase {
         XCTAssertEqual(err, noErr)
 
         XCTAssertEqual(outputBuf.floatChannelData![0][0], 42.0)
-
     }
-
 }

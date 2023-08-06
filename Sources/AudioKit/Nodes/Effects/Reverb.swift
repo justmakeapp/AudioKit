@@ -114,7 +114,8 @@ public extension AVAudioUnitReverbPreset {
     }
 
     var next: AVAudioUnitReverbPreset {
-        return AVAudioUnitReverbPreset(rawValue: (rawValue + 1) % AVAudioUnitReverbPreset.allCases.count) ?? AVAudioUnitReverbPreset.defaultValue
+        return AVAudioUnitReverbPreset(rawValue: (rawValue + 1) % AVAudioUnitReverbPreset.allCases.count) ??
+            AVAudioUnitReverbPreset.defaultValue
     }
 
     var previous: AVAudioUnitReverbPreset {

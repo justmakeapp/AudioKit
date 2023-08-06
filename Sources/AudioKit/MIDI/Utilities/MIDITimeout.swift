@@ -68,7 +68,7 @@ import Foundation
         }
 
         if mainThread {
-            DispatchQueue.main.async( execute: action )
+            DispatchQueue.main.async(execute: action)
         } else {
             action()
         }
@@ -82,10 +82,9 @@ import Foundation
         }
 
         if mainThread {
-            DispatchQueue.main.async( execute: action )
+            DispatchQueue.main.async(execute: action)
         } else {
             action()
         }
     }
-
 }

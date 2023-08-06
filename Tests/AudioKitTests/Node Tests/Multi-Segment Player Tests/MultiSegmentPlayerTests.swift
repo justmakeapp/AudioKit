@@ -188,14 +188,16 @@ private class ExampleSegment: StreamableAudioSegment {
         fileEndTime = audioFile.duration
     }
 
-    /// Segment starts at the beginning of file with an offset on the playback time (plays in future when reference time is 0)
+    /// Segment starts at the beginning of file with an offset on the playback time (plays in future when reference time
+    /// is 0)
     init(audioFile: AVAudioFile, playbackStartTime: TimeInterval) {
         self.audioFile = audioFile
         self.playbackStartTime = playbackStartTime
         fileEndTime = audioFile.duration
     }
 
-    /// Segment starts some time into the file with an offset on the playback time (plays in future when reference time is 0)
+    /// Segment starts some time into the file with an offset on the playback time (plays in future when reference time
+    /// is 0)
     init(audioFile: AVAudioFile, playbackStartTime: TimeInterval, fileStartTime: TimeInterval) {
         self.audioFile = audioFile
         self.playbackStartTime = playbackStartTime
@@ -203,9 +205,15 @@ private class ExampleSegment: StreamableAudioSegment {
         fileEndTime = audioFile.duration
     }
 
-    /// Segment starts some time into the file with an offset on the playback time (plays in future when reference time is 0)
+    /// Segment starts some time into the file with an offset on the playback time (plays in future when reference time
+    /// is 0)
     /// and completes playback before the end of file
-    init(audioFile: AVAudioFile, playbackStartTime: TimeInterval, fileStartTime: TimeInterval, fileEndTime: TimeInterval) {
+    init(
+        audioFile: AVAudioFile,
+        playbackStartTime: TimeInterval,
+        fileStartTime: TimeInterval,
+        fileEndTime: TimeInterval
+    ) {
         self.audioFile = audioFile
         self.playbackStartTime = playbackStartTime
         self.fileStartTime = fileStartTime

@@ -6,7 +6,7 @@ import AVFoundation
 extension AudioPlayer {
     // Fills the buffer with data read from the linked audio file
     func updateBuffer() {
-        guard let file = file else {
+        guard let file else {
             // don't print this error if there is a buffer already set, just return
             if buffer == nil {
                 Log("It's not possible to create edited buffers without a file reference.", type: .error)
@@ -104,15 +104,15 @@ extension AudioPlayer {
     }
 
     // Read the buffer in backwards
-    fileprivate func reverseBuffer() {
-        guard isBuffered, let buffer = buffer else { return }
+    private func reverseBuffer() {
+        guard isBuffered, let buffer else { return }
         if let reversedBuffer = buffer.reverse() {
             self.buffer = reversedBuffer
         }
     }
 
-    fileprivate func normalizeBuffer() {
-        guard isBuffered, let buffer = buffer else { return }
+    private func normalizeBuffer() {
+        guard isBuffered, let buffer else { return }
         if let normalizedBuffer = buffer.normalize() {
             self.buffer = normalizedBuffer
         }
@@ -122,11 +122,10 @@ extension AudioPlayer {
     ///  - Parameters:
     ///     - inTime specified in seconds, 0 if no fade
     ///     - outTime specified in seconds, 0 if no fade
-    fileprivate func fadeBuffer(inTime: TimeInterval = 0, outTime: TimeInterval = 0) {
-        guard isBuffered, let buffer = buffer else { return }
+    private func fadeBuffer(inTime: TimeInterval = 0, outTime: TimeInterval = 0) {
+        guard isBuffered, let buffer else { return }
         if let fadedBuffer = buffer.fade(inTime: inTime,
-                                         outTime: outTime)
-        {
+                                         outTime: outTime) {
             self.buffer = fadedBuffer
         }
     }

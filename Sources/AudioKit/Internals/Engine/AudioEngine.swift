@@ -5,7 +5,7 @@ import AVFoundation
 extension AVAudioNode {
     /// Disconnect without breaking other connections.
     func disconnect(input: AVAudioNode, format: AVAudioFormat) {
-        if let engine = engine {
+        if let engine {
             var newConnections: [AVAudioNode: [AVAudioConnectionPoint]] = [:]
             for bus in 0 ..< inputCount {
                 if let cp = engine.inputConnectionPoint(for: self, inputBus: bus) {
@@ -28,7 +28,7 @@ extension AVAudioNode {
 
     /// Make a connection without breaking other connections.
     func connect(input: AVAudioNode, bus: Int, format: AVAudioFormat) {
-        if let engine = engine {
+        if let engine {
             var points = engine.outputConnectionPoints(for: input, outputBus: 0)
             if points.contains(where: {
                 $0.node === self && $0.bus == bus
@@ -42,7 +42,7 @@ extension AVAudioNode {
 public extension AVAudioMixerNode {
     /// Make a connection without breaking other connections.
     func connectMixer(input: AVAudioNode, format: AVAudioFormat) {
-        if let engine = engine {
+        if let engine {
             var points = engine.outputConnectionPoints(for: input, outputBus: 0)
             if points.contains(where: { $0.node === self }) { return }
             points.append(AVAudioConnectionPoint(node: self, bus: nextAvailableInputBus))
@@ -64,7 +64,7 @@ public class AudioEngine {
     public let avEngine = AVAudioEngine()
 
     // maximum number of frames the engine will be asked to render in any single render call
-    let maximumFrameCount: AVAudioFrameCount = 1024
+    let maximumFrameCount: AVAudioFrameCount = 1_024
 
     /// Main mixer at the end of the signal chain
     public private(set) var mainMixerNode: Mixer?
@@ -87,8 +87,12 @@ public class AudioEngine {
     /// can cause the AVAudioEngine to stop running.
     public var input: InputNode? {
         if #available(macOS 10.14, *) {
-            guard avEngine.isInManualRenderingMode || Bundle.main.object(forInfoDictionaryKey: "NSMicrophoneUsageDescription") != nil else {
-                Log("To use the microphone, you must include the NSMicrophoneUsageDescription in your Info.plist", type: .error)
+            guard avEngine.isInManualRenderingMode || Bundle.main
+                .object(forInfoDictionaryKey: "NSMicrophoneUsageDescription") != nil else {
+                Log(
+                    "To use the microphone, you must include the NSMicrophoneUsageDescription in your Info.plist",
+                    type: .error
+                )
                 return nil
             }
         }
@@ -100,7 +104,7 @@ public class AudioEngine {
     }
 
     /// Empty initializer
-    public init() { }
+    public init() {}
 
     /// Output node
     public var output: Node? {
@@ -122,14 +126,13 @@ public class AudioEngine {
 
                 // has the sample rate changed?
                 if let currentSampleRate = mainMixerNode?.avAudioNode.outputFormat(forBus: 0).sampleRate,
-                   currentSampleRate != Settings.sampleRate
-                {
+                   currentSampleRate != Settings.sampleRate {
                     Log("Sample Rate has changed, creating new mainMixerNode at", Settings.sampleRate)
                     removeEngineMixer()
                 }
 
                 // create the on demand mixer if needed
-				createEngineMixer()
+                createEngineMixer()
                 mainMixerNode?.addInput(node)
                 mainMixerNode?.makeAVConnections()
             }
@@ -140,17 +143,17 @@ public class AudioEngine {
 
     // simulate the AVAudioEngine.mainMixerNode, but create it ourselves to ensure the
     // correct sample rate is used from Settings.audioFormat
-	private func createEngineMixer() {
-		guard mainMixerNode == nil else { return }
+    private func createEngineMixer() {
+        guard mainMixerNode == nil else { return }
 
-		let mixer = Mixer(name: "AudioKit Engine Mixer")
-		avEngine.attach(mixer.avAudioNode)
-		avEngine.connect(mixer.avAudioNode,
-						 to: avEngine.outputNode,
-						 format: Settings.audioFormat)
+        let mixer = Mixer(name: "AudioKit Engine Mixer")
+        avEngine.attach(mixer.avAudioNode)
+        avEngine.connect(mixer.avAudioNode,
+                         to: avEngine.outputNode,
+                         format: Settings.audioFormat)
 
-		mainMixerNode = mixer
-	}
+        mainMixerNode = mixer
+    }
 
     private func removeEngineMixer() {
         guard let mixer = mainMixerNode else { return }
@@ -312,55 +315,55 @@ public class AudioEngine {
     }
 
     #if os(macOS)
-    /// Enumerate the list of available devices.
-    public static var devices: [Device] {
-        return AudioDeviceUtils.devices().map { id in
-            Device(deviceID: id)
+        /// Enumerate the list of available devices.
+        public static var devices: [Device] {
+            return AudioDeviceUtils.devices().map { id in
+                Device(deviceID: id)
+            }
         }
-    }
 
-    /// One device for both input and output. Use aggregate devices to choose different inputs and outputs
-    public var device: Device {
-        Device(deviceID: avEngine.getDevice())
-    }
+        /// One device for both input and output. Use aggregate devices to choose different inputs and outputs
+        public var device: Device {
+            Device(deviceID: avEngine.getDevice())
+        }
 
-    /// Change the preferred output device, giving it one of the names from the list of available output.
-    /// - Parameter output: Output device
-    /// - Throws: Error if the device cannot be set
-    public func setDevice(_ output: Device) throws {
-        avEngine.setDevice(id: output.deviceID)
-    }
+        /// Change the preferred output device, giving it one of the names from the list of available output.
+        /// - Parameter output: Output device
+        /// - Throws: Error if the device cannot be set
+        public func setDevice(_ output: Device) throws {
+            avEngine.setDevice(id: output.deviceID)
+        }
 
     #else
-    /// Change the preferred input device, giving it one of the names from the list of available inputs.
-    public static func setInputDevice(_ input: Device) throws {
-        // Set the port description first eg iPhone Microphone / Headset Microphone etc
-        guard let portDescription = input.portDescription else {
-            throw CommonError.deviceNotFound
-        }
-        try AVAudioSession.sharedInstance().setPreferredInput(portDescription)
+        /// Change the preferred input device, giving it one of the names from the list of available inputs.
+        public static func setInputDevice(_ input: Device) throws {
+            // Set the port description first eg iPhone Microphone / Headset Microphone etc
+            guard let portDescription = input.portDescription else {
+                throw CommonError.deviceNotFound
+            }
+            try AVAudioSession.sharedInstance().setPreferredInput(portDescription)
 
-        // Set the data source (if any) eg. Back/Bottom/Front microphone
-        guard let dataSourceDescription = input.dataSource else {
-            return
+            // Set the data source (if any) eg. Back/Bottom/Front microphone
+            guard let dataSourceDescription = input.dataSource else {
+                return
+            }
+            try AVAudioSession.sharedInstance().setInputDataSource(dataSourceDescription)
         }
-        try AVAudioSession.sharedInstance().setInputDataSource(dataSourceDescription)
-    }
 
-    /// The current input device, if available.
-    public var inputDevice: Device? {
-        let session = AVAudioSession.sharedInstance()
-        if let portDescription = session.preferredInput ?? session.currentRoute.inputs.first {
-            return Device(portDescription: portDescription)
+        /// The current input device, if available.
+        public var inputDevice: Device? {
+            let session = AVAudioSession.sharedInstance()
+            if let portDescription = session.preferredInput ?? session.currentRoute.inputs.first {
+                return Device(portDescription: portDescription)
+            }
+            return nil
         }
-        return nil
-    }
 
-    /// The current output device, if available.
-    public var outputDevice: Device? {
-        let devs = AVAudioSession.sharedInstance().currentRoute.outputs
-        return devs.first.map { Device(name: $0.portName, deviceID: $0.uid) }
-    }
+        /// The current output device, if available.
+        public var outputDevice: Device? {
+            let devs = AVAudioSession.sharedInstance().currentRoute.outputs
+            return devs.first.map { Device(name: $0.portName, deviceID: $0.uid) }
+        }
     #endif
 
     /// Render output to an AVAudioFile for a duration.
@@ -377,11 +380,10 @@ public class AudioEngine {
     /// - Throws: Error if render failed
     @available(iOS 11, macOS 10.13, tvOS 11, *)
     public func renderToFile(_ audioFile: AVAudioFile,
-                             maximumFrameCount: AVAudioFrameCount = 4096,
+                             maximumFrameCount: AVAudioFrameCount = 4_096,
                              duration: Double,
                              prerender: (() -> Void)? = nil,
-                             progress: ((Double) -> Void)? = nil) throws
-    {
+                             progress: ((Double) -> Void)? = nil) throws {
         try avEngine.render(to: audioFile,
                             maximumFrameCount: maximumFrameCount,
                             duration: duration,

@@ -1,13 +1,11 @@
 // Copyright AudioKit. All Rights Reserved. Revision History at http://github.com/AudioKit/AudioKit/
 
-import XCTest
 import AudioKit
 import AVFoundation
+import XCTest
 
 final class RawBufferTapTests: XCTestCase {
-
     func testRawBufferTap() throws {
-
         let engine = AudioEngine()
         let osc = PlaygroundOscillator()
         engine.output = osc
@@ -27,5 +25,4 @@ final class RawBufferTapTests: XCTestCase {
 
         XCTAssertGreaterThan(allBuffers.count, 0)
     }
-
 }

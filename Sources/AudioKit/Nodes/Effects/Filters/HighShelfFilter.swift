@@ -21,8 +21,8 @@ public class HighShelfFilter: Node {
         identifier: "cutOffFrequency",
         name: "Cut Off Frequency",
         address: AUParameterAddress(kHighShelfParam_CutOffFrequency),
-        defaultValue: 10000,
-        range: 10000 ... 22050,
+        defaultValue: 10_000,
+        range: 10_000 ... 22_050,
         unit: .hertz
     )
 

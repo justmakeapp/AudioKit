@@ -16,114 +16,113 @@ import AVFoundation
 
  */
 public class Mixer3D: Mixer {
+    fileprivate let mixerAU = AVAudioMixerNode()
 
-	fileprivate let mixerAU = AVAudioMixerNode()
+    public var outputFormat: AVAudioFormat {
+        guard let monoFormat = AVAudioFormat(
+            standardFormatWithSampleRate: Settings.audioFormat.sampleRate,
+            channels: 1
+        ) else {
+            return Settings.audioFormat
+        }
+        return monoFormat
+    }
 
-	public var outputFormat: AVAudioFormat {
-		guard let monoFormat = AVAudioFormat(
-			standardFormatWithSampleRate: Settings.audioFormat.sampleRate,
-			channels: 1) else {
-			return Settings.audioFormat
-		}
-		return monoFormat
-	}
+    // MARK: - 3D Mixing Properties
 
-	// MARK: - 3D Mixing Properties
+    /**
+     A value that simulates filtering of the direct path of sound due to an obstacle.
+     */
+    public var obstruction: Float {
+        get {
+            mixerAU.obstruction
+        }
+        set {
+            mixerAU.obstruction = newValue
+        }
+    }
 
-	/**
-	 A value that simulates filtering of the direct path of sound due to an obstacle.
-	 */
-	public var obstruction: Float {
-		get {
-			mixerAU.obstruction
-		}
-		set {
-			mixerAU.obstruction = newValue
-		}
-	}
+    /**
+     A value that simulates filtering of the direct and reverb paths of sound due to an obstacle.
+     */
+    public var occlusion: Float {
+        get {
+            mixerAU.occlusion
+        }
+        set {
+            mixerAU.occlusion = newValue
+        }
+    }
 
-	/**
-	 A value that simulates filtering of the direct and reverb paths of sound due to an obstacle.
-	 */
-	public var occlusion: Float {
-		get {
-			mixerAU.occlusion
-		}
-		set {
-			mixerAU.occlusion = newValue
-		}
-	}
+    /**
+     The location of the source in the 3D environment.
+     */
+    public var position: AVAudio3DPoint {
+        get {
+            mixerAU.position
+        }
+        set {
+            mixerAU.position = newValue
+        }
+    }
 
-	/**
-	 The location of the source in the 3D environment.
-	 */
-	public var position: AVAudio3DPoint {
-		get {
-			mixerAU.position
-		}
-		set {
-			mixerAU.position = newValue
-		}
-	}
+    /**
+     A value that changes the playback rate of the input signal.
+     */
+    public var rate: Float {
+        get {
+            mixerAU.rate
+        }
+        set {
+            mixerAU.rate = newValue
+        }
+    }
 
-	/**
-	 A value that changes the playback rate of the input signal.
-	 */
-	public var rate: Float {
-		get {
-			mixerAU.rate
-		}
-		set {
-			mixerAU.rate = newValue
-		}
-	}
+    /**
+     A value that changes the playback rate of the input signal.
+     */
+    public var pointSourceInHeadMode: AVAudio3DMixingPointSourceInHeadMode {
+        get {
+            mixerAU.pointSourceInHeadMode
+        }
+        set {
+            mixerAU.pointSourceInHeadMode = newValue
+        }
+    }
 
-	/**
-	 A value that changes the playback rate of the input signal.
-	 */
-	public var pointSourceInHeadMode: AVAudio3DMixingPointSourceInHeadMode {
-		get {
-			mixerAU.pointSourceInHeadMode
-		}
-		set {
-			mixerAU.pointSourceInHeadMode = newValue
-		}
-	}
+    /**
+     A value that controls the blend of dry and reverb processed audio.
+     */
+    public var reverbBlend: Float {
+        get {
+            mixerAU.reverbBlend
+        }
+        set {
+            mixerAU.reverbBlend = newValue
+        }
+    }
 
-	/**
-	 A value that controls the blend of dry and reverb processed audio.
-	 */
-	public var reverbBlend: Float {
-		get {
-			mixerAU.reverbBlend
-		}
-		set {
-			mixerAU.reverbBlend = newValue
-		}
-	}
+    /**
+     A value that controls the blend of dry and reverb processed audio.
+     */
+    public var sourceMode: AVAudio3DMixingSourceMode {
+        get {
+            mixerAU.sourceMode
+        }
+        set {
+            mixerAU.sourceMode = newValue
+        }
+    }
 
-	/**
-	 A value that controls the blend of dry and reverb processed audio.
-	 */
-	public var sourceMode: AVAudio3DMixingSourceMode {
-		get {
-			mixerAU.sourceMode
-		}
-		set {
-			mixerAU.sourceMode = newValue
-		}
-	}
-
-	/**
-	 A value that controls the blend of dry and reverb processed audio.
-	 */
-	public var renderingAlgorithm: AVAudio3DMixingRenderingAlgorithm {
-		get {
-			mixerAU.renderingAlgorithm
-		}
-		set {
-			mixerAU.renderingAlgorithm = newValue
-		}
-	}
-
+    /**
+     A value that controls the blend of dry and reverb processed audio.
+     */
+    public var renderingAlgorithm: AVAudio3DMixingRenderingAlgorithm {
+        get {
+            mixerAU.renderingAlgorithm
+        }
+        set {
+            mixerAU.renderingAlgorithm = newValue
+        }
+    }
 }

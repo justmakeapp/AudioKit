@@ -1,11 +1,10 @@
 // Copyright AudioKit. All Rights Reserved. Revision History at http://github.com/AudioKit/AudioKit/
 
-import XCTest
 import AudioKit
 import AVFAudio
+import XCTest
 
 class AmplitudeTapTests: XCTestCase {
-
     func testTapDoesntDeadlockOnStop() throws {
         let engine = AudioEngine()
         let url = Bundle.module.url(forResource: "12345", withExtension: "wav", subdirectory: "TestResources")!
@@ -44,13 +43,13 @@ class AmplitudeTapTests: XCTestCase {
     func testDoesntCrashForMoreThenTwoChannels() {
         let channelCount: UInt32 = 4
         let channelLayout = AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_DiscreteInOrder | channelCount)!
-        let format = AVAudioFormat(standardFormatWithSampleRate: 44100, channelLayout: channelLayout)
+        let format = AVAudioFormat(standardFormatWithSampleRate: 44_100, channelLayout: channelLayout)
 
         let reverb = CustomFormatReverb(AudioPlayer(), outputFormat: format)
         let tap = AmplitudeTap(reverb, callbackQueue: .main)
 
         let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 1)!
-        for channel in 0...Int(channelCount - 1) {
+        for channel in 0 ... Int(channelCount - 1) {
             buffer.floatChannelData?[channel][0] = 0.0
         }
         tap.doHandleTapBlock(buffer: buffer, at: .now())
@@ -59,14 +58,14 @@ class AmplitudeTapTests: XCTestCase {
     func testStopResetsAllToZero() {
         let channelCount: UInt32 = 4
         let channelLayout = AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_DiscreteInOrder | channelCount)!
-        let format = AVAudioFormat(standardFormatWithSampleRate: 44100, channelLayout: channelLayout)
+        let format = AVAudioFormat(standardFormatWithSampleRate: 44_100, channelLayout: channelLayout)
 
         let reverb = CustomFormatReverb(AudioPlayer(), outputFormat: format)
         let tap = AmplitudeTap(reverb, callbackQueue: .main)
 
         let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 1)!
         buffer.frameLength = 1
-        for channel in 0...Int(channelCount - 1) {
+        for channel in 0 ... Int(channelCount - 1) {
             buffer.floatChannelData?[channel][0] = 1.0
         }
         tap.doHandleTapBlock(buffer: buffer, at: .now())
@@ -77,14 +76,14 @@ class AmplitudeTapTests: XCTestCase {
     func testAmplitudeIsAverageOfAllChannels() {
         let channelCount: UInt32 = 4
         let channelLayout = AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_DiscreteInOrder | channelCount)!
-        let format = AVAudioFormat(standardFormatWithSampleRate: 44100, channelLayout: channelLayout)
+        let format = AVAudioFormat(standardFormatWithSampleRate: 44_100, channelLayout: channelLayout)
 
         let reverb = CustomFormatReverb(AudioPlayer(), outputFormat: format)
         let tap = AmplitudeTap(reverb, callbackQueue: .main)
 
         let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 1)!
         buffer.frameLength = 1
-        for channel in 0...Int(channelCount - 1) {
+        for channel in 0 ... Int(channelCount - 1) {
             buffer.floatChannelData?[channel][0] = 1.0
         }
         tap.doHandleTapBlock(buffer: buffer, at: .now())
@@ -93,7 +92,7 @@ class AmplitudeTapTests: XCTestCase {
 
     func check(values: [Float], known: [Float]) {
         if values.count >= known.count {
-            for i in 0..<known.count {
+            for i in 0 ..< known.count {
                 XCTAssertEqual(values[i], 0.579 * known[i], accuracy: 0.03)
             }
         }
@@ -101,7 +100,6 @@ class AmplitudeTapTests: XCTestCase {
 
     @available(iOS 13.0, *)
     func testDefault() {
-
         let engine = AudioEngine()
 
         var detectedAmplitudes: [Float] = []
@@ -120,7 +118,6 @@ class AmplitudeTapTests: XCTestCase {
                     expect.fulfill()
                 }
             }
-
         }
         tap.start()
 
@@ -132,8 +129,5 @@ class AmplitudeTapTests: XCTestCase {
         wait(for: [expect], timeout: 10.0)
 
         check(values: detectedAmplitudes, known: targetAmplitudes)
-
     }
-
-
 }

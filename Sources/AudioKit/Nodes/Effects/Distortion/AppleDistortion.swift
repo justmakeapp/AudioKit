@@ -123,8 +123,8 @@ public extension AVAudioUnitDistortionPreset {
 
     var next: AVAudioUnitDistortionPreset {
         return AVAudioUnitDistortionPreset(rawValue:
-                                            (rawValue + 1) % AVAudioUnitDistortionPreset.allCases.count)
-        ?? AVAudioUnitDistortionPreset.defaultValue
+            (rawValue + 1) % AVAudioUnitDistortionPreset.allCases.count)
+            ?? AVAudioUnitDistortionPreset.defaultValue
     }
 
     var previous: AVAudioUnitDistortionPreset {

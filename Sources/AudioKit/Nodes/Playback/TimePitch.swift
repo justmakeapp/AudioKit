@@ -26,7 +26,7 @@ public class TimePitch: Node {
     /// Pitch (Cents) ranges from -2400 to 2400 (Default: 0.0)
     public var pitch: AUValue = 0.0 {
         didSet {
-            pitch = pitch.clamped(to: -2400 ... 2400)
+            pitch = pitch.clamped(to: -2_400 ... 2_400)
             timePitchAU.pitch = pitch
         }
     }

@@ -39,7 +39,7 @@ open class NodeRecorder: NSObject {
     private var bus: Int = 0
 
     /// Used for fixing recordings being truncated
-    private var recordBufferDuration: Double = 16384 / Settings.sampleRate
+    private var recordBufferDuration: Double = 16_384 / Settings.sampleRate
 
     /// return the AVAudioFile for reading
     open var audioFile: AVAudioFile? {
@@ -88,8 +88,7 @@ open class NodeRecorder: NSObject {
                 fileDirectoryURL: URL? = nil,
                 bus: Int = 0,
                 shouldCleanupRecordings: Bool = true,
-                audioDataCallback: AudioDataCallback? = nil) throws
-    {
+                audioDataCallback: AudioDataCallback? = nil) throws {
         self.node = node
         self.fileDirectoryURL = fileDirectoryURL ?? URL(fileURLWithPath: NSTemporaryDirectory())
         self.shouldCleanupRecordings = shouldCleanupRecordings
@@ -134,7 +133,8 @@ open class NodeRecorder: NSObject {
     }
 
     /// Returns a CAF file in specified directory suitable for writing to via Settings.audioFormat
-    public static func createAudioFile(fileDirectoryURL: URL = URL(fileURLWithPath: NSTemporaryDirectory())) -> AVAudioFile? {
+    public static func createAudioFile(fileDirectoryURL: URL = URL(fileURLWithPath: NSTemporaryDirectory()))
+        -> AVAudioFile? {
         let filename = createDateFileName() + ".caf"
         let url = fileDirectoryURL.appendingPathComponent(filename)
         var settings = Settings.audioFormat.settings
@@ -202,7 +202,7 @@ open class NodeRecorder: NSObject {
     }
 
     private func process(buffer: AVAudioPCMBuffer, time: AVAudioTime) {
-        guard let internalAudioFile = internalAudioFile else { return }
+        guard let internalAudioFile else { return }
 
         do {
             if !isPaused {
@@ -276,7 +276,7 @@ open class NodeRecorder: NSObject {
             stop()
         }
 
-        guard let audioFile = audioFile else { return }
+        guard let audioFile else { return }
 
         // Delete the physical recording file
         do {

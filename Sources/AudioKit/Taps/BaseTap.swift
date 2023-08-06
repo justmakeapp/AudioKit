@@ -120,7 +120,7 @@ open class BaseTap {
     }
 
     /// Override this method to handle Tap in derived class
-    open func doHandleTapBlock(buffer: AVAudioPCMBuffer, at time: AVAudioTime) {}
+    open func doHandleTapBlock(buffer _: AVAudioPCMBuffer, at _: AVAudioTime) {}
 
     /// Remove the tap on the input
     open func stop() {

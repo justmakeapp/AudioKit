@@ -26,7 +26,7 @@ open class FFTTap: BaseTap {
     ///   - fftValidBinNumber: Valid fft bin count to return
     ///   - handler: Callback to call when FFT is calculated
     public init(_ input: Node,
-                bufferSize: UInt32 = 4096,
+                bufferSize: UInt32 = 4_096,
                 fftValidBinCount: FFTValidBinCount? = nil,
                 callbackQueue: DispatchQueue,
                 handler: @escaping Handler) {
@@ -48,7 +48,7 @@ open class FFTTap: BaseTap {
     /// - Parameters:
     ///   - buffer: Buffer to analyze
     ///   - time: Unused in this case
-    override open func doHandleTapBlock(buffer: AVAudioPCMBuffer, at time: AVAudioTime) {
+    override open func doHandleTapBlock(buffer: AVAudioPCMBuffer, at _: AVAudioTime) {
         guard buffer.floatChannelData != nil else { return }
 
         fftData = FFTTap.performFFT(buffer: buffer,
@@ -176,8 +176,8 @@ public enum FFTValidBinCount: Double {
          oneHundredTwentyEight = 128,
          twoHundredFiftySix = 256,
          fiveHundredAndTwelve = 512,
-         oneThousandAndTwentyFour = 1024,
-         twoThousandAndFortyEight = 2048,
-         fourThousandAndNintySix = 4096,
-         eightThousandOneHundredAndNintyTwo = 8192
+         oneThousandAndTwentyFour = 1_024,
+         twoThousandAndFortyEight = 2_048,
+         fourThousandAndNintySix = 4_096,
+         eightThousandOneHundredAndNintyTwo = 8_192
 }

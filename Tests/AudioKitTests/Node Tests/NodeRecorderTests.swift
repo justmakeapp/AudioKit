@@ -66,6 +66,6 @@ class NodeRecorderTests: XCTestCase {
         let audio = engine.startTest(totalDuration: 1.0)
         player.play()
         audio.append(engine.render(duration: 1.0))
-        XCTAssertEqual(values[5000], -0.027038574)
+        XCTAssertEqual(values[5_000], -0.027038574)
     }
 }

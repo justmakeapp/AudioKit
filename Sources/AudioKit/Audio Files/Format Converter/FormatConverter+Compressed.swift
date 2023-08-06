@@ -19,11 +19,11 @@ extension FormatConverter {
     /// This is no longer used in this class as it's not possible to convert sample rate or other
     /// required options. It will use the next function instead
     func convertCompressed(presetName: String, completionHandler: FormatConverterCallback? = nil) {
-        guard let inputURL = inputURL else {
+        guard let inputURL else {
             completionHandler?(Self.createError(message: "Input file can't be nil."))
             return
         }
-        guard let outputURL = outputURL else {
+        guard let outputURL else {
             completionHandler?(Self.createError(message: "Output file can't be nil."))
             return
         }
@@ -35,7 +35,8 @@ extension FormatConverter {
         session.determineCompatibleFileTypes { list in
 
             guard let outputFileType: AVFileType = list.first else {
-                let error = Self.createError(message: "Unable to determine a compatible file type from \(inputURL.path)")
+                let error = Self
+                    .createError(message: "Unable to determine a compatible file type from \(inputURL.path)")
                 completionHandler?(error)
                 return
             }
@@ -52,16 +53,16 @@ extension FormatConverter {
     /// Convert to compressed first creating a tmp file to PCM to allow more flexible conversion
     /// options to work.
     func convertCompressed(completionHandler: FormatConverterCallback? = nil) {
-        guard let inputURL = inputURL else {
+        guard let inputURL else {
             completionHandler?(Self.createError(message: "Input file can't be nil."))
             return
         }
-        guard let outputURL = outputURL else {
+        guard let outputURL else {
             completionHandler?(Self.createError(message: "Output file can't be nil."))
             return
         }
 
-        guard let options = options else {
+        guard let options else {
             completionHandler?(Self.createError(message: "Options can't be nil."))
             return
         }
@@ -81,8 +82,9 @@ extension FormatConverter {
                                             options: tempOptions)
 
         tempConverter.start { error in
-            if let error = error {
-                completionHandler?(Self.createError(message: "Failed to convert input to PCM: \(error.localizedDescription)"))
+            if let error {
+                completionHandler?(Self
+                    .createError(message: "Failed to convert input to PCM: \(error.localizedDescription)"))
                 return
             }
 
@@ -97,23 +99,24 @@ extension FormatConverter {
 
     /// The AVFoundation way. *This doesn't currently handle compressed input - only compressed output.*
     func convertPCMToCompressed(completionHandler: FormatConverterCallback? = nil) {
-        guard let inputURL = inputURL else {
+        guard let inputURL else {
             completionHandler?(Self.createError(message: "Input file can't be nil."))
             return
         }
-        guard let outputURL = outputURL else {
+        guard let outputURL else {
             completionHandler?(Self.createError(message: "Output file can't be nil."))
             return
         }
 
-        guard let options = options, let outputFormat = options.format else {
+        guard let options, let outputFormat = options.format else {
             completionHandler?(Self.createError(message: "Options can't be nil."))
             return
         }
 
         // verify outputFormat
         guard FormatConverter.outputFormats.contains(outputFormat) else {
-            completionHandler?(Self.createError(message: "The output file format isn't able to be produced by this class."))
+            completionHandler?(Self
+                .createError(message: "The output file format isn't able to be produced by this class."))
             return
         }
 
@@ -126,7 +129,7 @@ extension FormatConverter {
             return
         }
 
-        guard let reader = reader else {
+        guard let reader else {
             completionHandler?(Self.createError(message: "Unable to setup the AVAssetReader."))
             return
         }
@@ -164,7 +167,7 @@ extension FormatConverter {
             return
         }
 
-        guard let writer = writer else {
+        guard let writer else {
             completionHandler?(Self.createError(message: "Unable to setup the AVAssetWriter."))
             return
         }
@@ -183,14 +186,14 @@ extension FormatConverter {
 
         if sampleRate == 0 {
             Log("Sample rate can't be 0 - assigning to default format of 48k. inputFormat is", inputFormat)
-            sampleRate = 48000
+            sampleRate = 48_000
         }
         var outputSettings: [String: Any]?
 
         // Note: AVAssetReaderOutput does not currently support compressed audio
         if formatKey == kAudioFormatMPEG4AAC {
-            if sampleRate > 48000 {
-                sampleRate = 48000
+            if sampleRate > 48_000 {
+                sampleRate = 48_000
             }
             // mono should be 1/2 the shown bitrate
             let perChannel = channels == 1 ? 2 : 1
@@ -258,8 +261,7 @@ extension FormatConverter {
 
             while writerInput.isReadyForMoreMediaData, processing {
                 if reader.status == .reading,
-                   let buffer = readerOutput.copyNextSampleBuffer()
-                {
+                   let buffer = readerOutput.copyNextSampleBuffer() {
                     writerInput.append(buffer)
 
                 } else {

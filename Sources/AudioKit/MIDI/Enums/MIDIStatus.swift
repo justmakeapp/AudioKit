@@ -2,7 +2,6 @@
 
 /// MIDI Status Message
 public struct MIDIStatus: MIDIMessage {
-
     /// Status message data
     public var data: [MIDIByte] {
         return [byte]

@@ -51,8 +51,7 @@ public class WaveformDataRequest {
                              offset: Int? = 0,
                              length: UInt? = nil,
                              queue: DispatchQueue = DispatchQueue.global(qos: .userInitiated),
-                             completionHandler: @escaping ((FloatChannelData?) -> Void))
-    {
+                             completionHandler: @escaping ((FloatChannelData?) -> Void)) {
         queue.async {
             completionHandler(self.getData(with: samplesPerPixel, offset: offset, length: length))
         }
@@ -66,9 +65,8 @@ public class WaveformDataRequest {
     /// - Returns: An array of array of floats, one for each channel
     public func getData(with samplesPerPixel: Int,
                         offset: Int? = 0,
-                        length: UInt? = nil) -> FloatChannelData?
-    {
-        guard let audioFile = audioFile else { return nil }
+                        length: UInt? = nil) -> FloatChannelData? {
+        guard let audioFile else { return nil }
 
         // prevent division by zero, + minimum resolution
         let samplesPerPixel = max(64, samplesPerPixel)
@@ -86,12 +84,12 @@ public class WaveformDataRequest {
         var data = Array(repeating: [Float](zeros: samplesPerPixel), count: channelCount)
 
         var start: Int
-        if let offset = offset, offset >= 0 {
+        if let offset, offset >= 0 {
             start = offset
         } else {
             // offset == nil or minus case. read from the currentFrame
             start = Int(currentFrame / Int64(framesPerBuffer))
-            if let offset = offset, offset < 0 {
+            if let offset, offset < 0 {
                 start += offset
             }
             // check start offset
@@ -102,7 +100,7 @@ public class WaveformDataRequest {
         var startFrame: AVAudioFramePosition = offset == nil ? currentFrame : Int64(start * Int(framesPerBuffer))
 
         var end = samplesPerPixel
-        if let length = length {
+        if let length {
             end = start + Int(length)
         }
         // check end

@@ -22,7 +22,7 @@ public class RingModulator: Node {
         name: "Ring Mod Freq1",
         address: AUParameterAddress(kDistortionParam_RingModFreq1),
         defaultValue: 100,
-        range: 0.5 ... 8000,
+        range: 0.5 ... 8_000,
         unit: .hertz
     )
 
@@ -35,7 +35,7 @@ public class RingModulator: Node {
         name: "Ring Mod Freq2",
         address: AUParameterAddress(kDistortionParam_RingModFreq2),
         defaultValue: 100,
-        range: 0.5 ... 8000,
+        range: 0.5 ... 8_000,
         unit: .hertz
     )
 

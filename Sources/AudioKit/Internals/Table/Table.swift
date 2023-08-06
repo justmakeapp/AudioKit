@@ -116,8 +116,7 @@ public class Table: MutableCollection {
     ///
     public init(_ type: TableType = .sine,
                 phase: Float = 0,
-                count: IndexDistance = 4096)
-    {
+                count: IndexDistance = 4_096) {
         self.type = type
         self.phase = phase
         content = [Element](zeros: count)

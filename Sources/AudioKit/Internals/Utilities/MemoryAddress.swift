@@ -10,7 +10,7 @@ public struct MemoryAddress: CustomStringConvertible {
         return String(format: "%0\(size)p", opaquePointerAddress)
     }
 
-   public  init(of classInstance: AnyObject) {
+    public init(of classInstance: AnyObject) {
         opaquePointerAddress = Int(bitPattern: Unmanaged.passUnretained(classInstance).toOpaque())
     }
 }

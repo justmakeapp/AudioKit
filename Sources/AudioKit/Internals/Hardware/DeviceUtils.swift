@@ -1,148 +1,153 @@
 // Copyright AudioKit. All Rights Reserved. Revision History at http://github.com/AudioKit/AudioKit/
 
 #if os(macOS)
-import CoreAudio
-import Foundation
+    import CoreAudio
+    import Foundation
 
-struct AudioDeviceUtils {
-    static func devices() -> [AudioDeviceID] {
-        var propsize: UInt32 = 0
+    struct AudioDeviceUtils {
+        static func devices() -> [AudioDeviceID] {
+            var propsize: UInt32 = 0
 
-        var address: AudioObjectPropertyAddress = AudioObjectPropertyAddress(
-            mSelector: AudioObjectPropertySelector(kAudioHardwarePropertyDevices),
-            mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeGlobal),
-            mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster))
+            var address = AudioObjectPropertyAddress(
+                mSelector: AudioObjectPropertySelector(kAudioHardwarePropertyDevices),
+                mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeGlobal),
+                mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
+            )
 
-        var result = AudioObjectGetPropertyDataSize(AudioObjectID(kAudioObjectSystemObject),
-                                                    &address,
-                                                    UInt32(MemoryLayout<AudioObjectPropertyAddress>.size),
-                                                    nil, &propsize)
+            var result = AudioObjectGetPropertyDataSize(AudioObjectID(kAudioObjectSystemObject),
+                                                        &address,
+                                                        UInt32(MemoryLayout<AudioObjectPropertyAddress>.size),
+                                                        nil, &propsize)
 
-        if result != 0 {
-            Log("Error \(result) from AudioObjectGetPropertyDataSize")
-            return []
-        }
-
-        let deviceCount = Int(propsize / UInt32(MemoryLayout<AudioDeviceID>.size))
-
-        if deviceCount == 0 {
-            return []
-        }
-
-        var devids = [AudioDeviceID](repeating: 0, count: deviceCount)
-
-        result = 0
-        devids.withUnsafeMutableBufferPointer { bufferPointer in
-            if let pointer = bufferPointer.baseAddress {
-                result = AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject),
-                                                    &address,
-                                                    0,
-                                                    nil,
-                                                    &propsize,
-                                                    pointer)
+            if result != 0 {
+                Log("Error \(result) from AudioObjectGetPropertyDataSize")
+                return []
             }
+
+            let deviceCount = Int(propsize / UInt32(MemoryLayout<AudioDeviceID>.size))
+
+            if deviceCount == 0 {
+                return []
+            }
+
+            var devids = [AudioDeviceID](repeating: 0, count: deviceCount)
+
+            result = 0
+            devids.withUnsafeMutableBufferPointer { bufferPointer in
+                if let pointer = bufferPointer.baseAddress {
+                    result = AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject),
+                                                        &address,
+                                                        0,
+                                                        nil,
+                                                        &propsize,
+                                                        pointer)
+                }
+            }
+
+            if result != 0 {
+                Log("Error \(result) from AudioObjectGetPropertyData")
+                return []
+            }
+
+            return devids
         }
 
-        if result != 0 {
-            Log("Error \(result) from AudioObjectGetPropertyData")
-            return []
-        }
+        static func name(_ device: AudioDeviceID) -> String {
+            var address = AudioObjectPropertyAddress(
+                mSelector: AudioObjectPropertySelector(kAudioDevicePropertyDeviceNameCFString),
+                mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeGlobal),
+                mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
+            )
 
-        return devids
-    }
+            var name: CFString?
+            var propsize = UInt32(MemoryLayout<CFString?>.size)
+            let result: OSStatus = AudioObjectGetPropertyData(device, &address, 0, nil, &propsize, &name)
+            if result != 0 {
+                return ""
+            }
 
-    static func name(_ device: AudioDeviceID) -> String {
-        var address: AudioObjectPropertyAddress = AudioObjectPropertyAddress(
-            mSelector: AudioObjectPropertySelector(kAudioDevicePropertyDeviceNameCFString),
-            mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeGlobal),
-            mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster))
+            if let str = name {
+                return str as String
+            }
 
-        var name: CFString?
-        var propsize: UInt32 = UInt32(MemoryLayout<CFString?>.size)
-        let result: OSStatus = AudioObjectGetPropertyData(device, &address, 0, nil, &propsize, &name)
-        if result != 0 {
             return ""
         }
 
-        if let str = name {
-            return str as String
+        static func outputChannels(_ device: AudioDeviceID) -> Int {
+            var address = AudioObjectPropertyAddress(
+                mSelector: AudioObjectPropertySelector(kAudioDevicePropertyStreamConfiguration),
+                mScope: AudioObjectPropertyScope(kAudioDevicePropertyScopeOutput),
+                mElement: 0
+            )
+
+            var propsize: UInt32 = 0
+            var result: OSStatus = AudioObjectGetPropertyDataSize(device, &address, 0, nil, &propsize)
+            if result != 0 {
+                return 0
+            }
+
+            let bufferList = UnsafeMutablePointer<AudioBufferList>.allocate(capacity: Int(propsize))
+            result = AudioObjectGetPropertyData(device, &address, 0, nil, &propsize, bufferList)
+            if result != 0 {
+                return 0
+            }
+
+            let buffers = UnsafeMutableAudioBufferListPointer(bufferList)
+            var channels = 0
+            for i in 0 ..< buffers.count {
+                channels += Int(buffers[i].mNumberChannels)
+            }
+
+            return channels
         }
 
-        return ""
-    }
+        static func inputChannels(_ device: AudioDeviceID) -> Int {
+            var address = AudioObjectPropertyAddress(
+                mSelector: AudioObjectPropertySelector(kAudioDevicePropertyStreamConfiguration),
+                mScope: AudioObjectPropertyScope(kAudioDevicePropertyScopeInput),
+                mElement: 0
+            )
 
-    static func outputChannels(_ device: AudioDeviceID) -> Int {
-        var address: AudioObjectPropertyAddress = AudioObjectPropertyAddress(
-            mSelector: AudioObjectPropertySelector(kAudioDevicePropertyStreamConfiguration),
-            mScope: AudioObjectPropertyScope(kAudioDevicePropertyScopeOutput),
-            mElement: 0)
+            var propsize: UInt32 = 0
+            var result: OSStatus = AudioObjectGetPropertyDataSize(device, &address, 0, nil, &propsize)
+            if result != 0 {
+                return 0
+            }
 
-        var propsize: UInt32 = 0
-        var result: OSStatus = AudioObjectGetPropertyDataSize(device, &address, 0, nil, &propsize)
-        if result != 0 {
-            return 0
+            let bufferList = UnsafeMutablePointer<AudioBufferList>.allocate(capacity: Int(propsize))
+            result = AudioObjectGetPropertyData(device, &address, 0, nil, &propsize, bufferList)
+            if result != 0 {
+                return 0
+            }
+
+            let buffers = UnsafeMutableAudioBufferListPointer(bufferList)
+            var channels = 0
+            for i in 0 ..< buffers.count {
+                channels += Int(buffers[i].mNumberChannels)
+            }
+
+            return channels
         }
 
-        let bufferList = UnsafeMutablePointer<AudioBufferList>.allocate(capacity: Int(propsize))
-        result = AudioObjectGetPropertyData(device, &address, 0, nil, &propsize, bufferList)
-        if result != 0 {
-            return 0
-        }
+        static func uid(_ device: AudioDeviceID) -> String {
+            var address = AudioObjectPropertyAddress(
+                mSelector: AudioObjectPropertySelector(kAudioDevicePropertyDeviceUID),
+                mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeGlobal),
+                mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster)
+            )
 
-        let buffers = UnsafeMutableAudioBufferListPointer(bufferList)
-        var channels = 0
-        for i in 0..<buffers.count {
-            channels += Int(buffers[i].mNumberChannels)
-        }
+            var name: CFString?
+            var propsize = UInt32(MemoryLayout<CFString?>.size)
+            let result: OSStatus = AudioObjectGetPropertyData(device, &address, 0, nil, &propsize, &name)
+            if result != 0 {
+                return ""
+            }
 
-        return channels
-    }
+            if let str = name {
+                return str as String
+            }
 
-    static func inputChannels(_ device: AudioDeviceID) -> Int {
-        var address: AudioObjectPropertyAddress = AudioObjectPropertyAddress(
-            mSelector: AudioObjectPropertySelector(kAudioDevicePropertyStreamConfiguration),
-            mScope: AudioObjectPropertyScope(kAudioDevicePropertyScopeInput),
-            mElement: 0)
-
-        var propsize: UInt32 = 0
-        var result: OSStatus = AudioObjectGetPropertyDataSize(device, &address, 0, nil, &propsize)
-        if result != 0 {
-            return 0
-        }
-
-        let bufferList = UnsafeMutablePointer<AudioBufferList>.allocate(capacity: Int(propsize))
-        result = AudioObjectGetPropertyData(device, &address, 0, nil, &propsize, bufferList)
-        if result != 0 {
-            return 0
-        }
-
-        let buffers = UnsafeMutableAudioBufferListPointer(bufferList)
-        var channels = 0
-        for i in 0..<buffers.count {
-            channels += Int(buffers[i].mNumberChannels)
-        }
-
-        return channels
-    }
-
-    static func uid(_ device: AudioDeviceID) -> String {
-        var address: AudioObjectPropertyAddress = AudioObjectPropertyAddress(
-            mSelector: AudioObjectPropertySelector(kAudioDevicePropertyDeviceUID),
-            mScope: AudioObjectPropertyScope(kAudioObjectPropertyScopeGlobal),
-            mElement: AudioObjectPropertyElement(kAudioObjectPropertyElementMaster))
-
-        var name: CFString?
-        var propsize: UInt32 = UInt32(MemoryLayout<CFString?>.size)
-        let result: OSStatus = AudioObjectGetPropertyData(device, &address, 0, nil, &propsize, &name)
-        if result != 0 {
             return ""
         }
-
-        if let str = name {
-            return str as String
-        }
-
-        return ""
     }
-}
 #endif

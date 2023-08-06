@@ -11,7 +11,7 @@ public class ConstantGenerator: Node {
     init(constant: Float) {
         avAudioNode = AVAudioSourceNode { _, _, frameCount, audioBufferList in
             let ablPointer = UnsafeMutableAudioBufferListPointer(audioBufferList)
-            for frame in 0..<Int(frameCount) {
+            for frame in 0 ..< Int(frameCount) {
                 for buffer in ablPointer {
                     let buf: UnsafeMutableBufferPointer<Float> = UnsafeMutableBufferPointer(buffer)
                     buf[frame] = constant

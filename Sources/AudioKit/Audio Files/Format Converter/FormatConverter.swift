@@ -43,8 +43,7 @@ public class FormatConverter {
     /// init with input, output and options - then start()
     public init(inputURL: URL,
                 outputURL: URL,
-                options: Options? = nil)
-    {
+                options: Options? = nil) {
         self.inputURL = inputURL
         self.outputURL = outputURL
         self.options = options ?? Options()
@@ -63,12 +62,12 @@ public class FormatConverter {
     /// The entry point for file conversion
     /// - Parameter completionHandler: the callback that will be triggered when process has completed.
     public func start(completionHandler: FormatConverterCallback? = nil) {
-        guard let inputURL = inputURL else {
+        guard let inputURL else {
             completionHandler?(Self.createError(message: "Input file can't be nil."))
             return
         }
 
-        guard let outputURL = outputURL else {
+        guard let outputURL else {
             completionHandler?(Self.createError(message: "Output file can't be nil."))
             return
         }
@@ -76,7 +75,8 @@ public class FormatConverter {
         let inputFormat = AudioFileFormat(rawValue: inputURL.pathExtension.lowercased()) ?? .unknown
         // verify inputFormat, only allow files with path extensions for speed?
         guard FormatConverter.inputFormats.contains(inputFormat) else {
-            completionHandler?(Self.createError(message: "The input file format is in an incompatible format: \(inputFormat)"))
+            completionHandler?(Self
+                .createError(message: "The input file format is in an incompatible format: \(inputFormat)"))
             return
         }
 
@@ -104,14 +104,12 @@ public class FormatConverter {
 
             // PCM input, compressed output
         } else if Self.isPCM(url: inputURL) == true,
-                  Self.isCompressed(url: outputURL) == true
-        {
+                  Self.isCompressed(url: outputURL) == true {
             convertPCMToCompressed(completionHandler: completionHandler)
 
             // Compressed input and output, won't do sample rate
         } else if Self.isCompressed(url: inputURL) == true,
-                  Self.isCompressed(url: outputURL) == true
-        {
+                  Self.isCompressed(url: outputURL) == true {
             convertCompressed(completionHandler: completionHandler)
 
         } else {
@@ -142,7 +140,6 @@ public enum AudioFileFormat: String {
 }
 
 public extension FormatConverter {
-
     /// FormatConverterCallback is the callback format for start()
     /// - Parameter: error This will contain one parameter of type Error which is nil if the conversion was successful.
     typealias FormatConverterCallback = (_ error: Error?) -> Void
@@ -180,9 +177,9 @@ public extension FormatConverter {
         /// used only with PCM data
         public var bitDepth: UInt32?
         /// used only when outputting compressed audio
-        public var bitRate: UInt32 = 128000 {
+        public var bitRate: UInt32 = 128_000 {
             didSet {
-                bitRate = bitRate.clamped(to: 64000 ... 320000)
+                bitRate = bitRate.clamped(to: 64_000 ... 320_000)
             }
         }
 
@@ -230,8 +227,7 @@ public extension FormatConverter {
         public init?(pcmFormat: AudioFileFormat,
                      sampleRate: Double? = nil,
                      bitDepth: UInt32? = nil,
-                     channels: UInt32? = nil)
-        {
+                     channels: UInt32? = nil) {
             format = pcmFormat
             self.sampleRate = sampleRate
             self.bitDepth = bitDepth
@@ -241,11 +237,10 @@ public extension FormatConverter {
 
     internal func completionProxy(error: Error?,
                                   deleteOutputOnError: Bool = true,
-                                  completionHandler: FormatConverterCallback? = nil)
-    {
+                                  completionHandler: FormatConverterCallback? = nil) {
         guard error != nil,
               deleteOutputOnError,
-              let outputURL = outputURL,
+              let outputURL,
               FileManager.default.fileExists(atPath: outputURL.path)
         else {
             completionHandler?(error)

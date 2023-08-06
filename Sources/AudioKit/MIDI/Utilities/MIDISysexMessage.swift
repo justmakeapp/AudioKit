@@ -23,8 +23,7 @@ public struct MIDISysExMessage: MIDIMessage {
         else {
             return nil
         }
-        self.data = Array(bytes.prefix(2 + Int(vlqLength.quantity))) //2 is for F0 and F7
+        self.data = Array(bytes.prefix(2 + Int(vlqLength.quantity))) // 2 is for F0 and F7
         self.length = Int(vlqLength.quantity)
     }
-
 }

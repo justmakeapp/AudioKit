@@ -22,7 +22,6 @@ func == (lhs: ObserverProtocol, rhs: ObserverProtocol) -> Bool {
 }
 
 class MIDIObserverMaster<P> where P: ObserverProtocol {
-
     var observers: [P] = []
 
     /// Add an observer that conforms to the observer protocol
@@ -40,13 +39,13 @@ class MIDIObserverMaster<P> where P: ObserverProtocol {
     }
 
     /// Remove all observers
-    public func removeAllObserver(_ observer: P) {
+    public func removeAllObserver(_: P) {
         observers.removeAll()
     }
 
     /// Do something to all observers
     /// - Parameter block: Block to call on each observer
-    public func forEachObserver(_ block: (P) -> Void ) {
+    public func forEachObserver(_ block: (P) -> Void) {
         for observer in observers { block(observer) }
     }
 }

@@ -40,8 +40,7 @@ public extension MultiChannelInputNodeTap {
         public init(url: URL,
                     fileFormat: AVAudioFormat,
                     channel: Int32,
-                    ioLatency: AVAudioFrameCount = 0)
-        {
+                    ioLatency: AVAudioFrameCount = 0) {
             self.fileFormat = fileFormat
             self.channel = channel
             self.url = url
@@ -91,7 +90,7 @@ public extension MultiChannelInputNodeTap {
         // strange that they let you set a buffer size in the first place. macOS is setting to
         // 4800 when at 48k, or sampleRate / 10. That's a big buffer.
         private func writeFile(buffer: AVAudioPCMBuffer, time: AVAudioTime) throws {
-            guard let file = file else { return }
+            guard let file else { return }
 
             var buffer = buffer
             totalFramesRead += buffer.frameLength
@@ -111,11 +110,17 @@ public extension MultiChannelInputNodeTap {
 
                     // edit the first buffer to remove io latency samples length
                     if buffer.frameLength > latencyOffset,
-                       let offsetBuffer = buffer.copyFrom(startSample: startSample)
-                    {
+                       let offsetBuffer = buffer.copyFrom(startSample: startSample) {
                         buffer = offsetBuffer
 
-                        Log("Writing partial buffer", offsetBuffer.frameLength, "frames, ioLatency is", ioLatency, "latencyOffset", latencyOffset)
+                        Log(
+                            "Writing partial buffer",
+                            offsetBuffer.frameLength,
+                            "frames, ioLatency is",
+                            ioLatency,
+                            "latencyOffset",
+                            latencyOffset
+                        )
                     } else {
                         Log("Unexpected buffer size of", buffer.frameLength)
                     }

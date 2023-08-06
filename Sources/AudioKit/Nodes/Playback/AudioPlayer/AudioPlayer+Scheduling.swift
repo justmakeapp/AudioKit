@@ -9,8 +9,7 @@ extension AudioPlayer {
     ///   - when: What time to schedule for
     ///   - completionCallbackType: Constants that specify when the completion handler must be invoked.
     public func schedule(at when: AVAudioTime? = nil,
-                         completionCallbackType: AVAudioPlayerNodeCompletionCallbackType = .dataPlayedBack)
-    {
+                         completionCallbackType: AVAudioPlayerNodeCompletionCallbackType = .dataPlayedBack) {
         status = .scheduling
 
         if isBuffered {
@@ -29,9 +28,8 @@ extension AudioPlayer {
 
     // play from disk rather than ram
     private func scheduleSegment(at audioTime: AVAudioTime?,
-                                 completionCallbackType: AVAudioPlayerNodeCompletionCallbackType = .dataPlayedBack)
-    {
-        guard let file = file else {
+                                 completionCallbackType: AVAudioPlayerNodeCompletionCallbackType = .dataPlayedBack) {
+        guard let file else {
             Log("File is nil")
             return
         }
@@ -46,7 +44,10 @@ extension AudioPlayer {
         let totalFrames = (file.length - startFrame) - (file.length - endFrame)
 
         guard totalFrames > 0 else {
-            Log("Unable to schedule file. totalFrames to play: \(totalFrames). file.length: \(file.length)", type: .error)
+            Log(
+                "Unable to schedule file. totalFrames to play: \(totalFrames). file.length: \(file.length)",
+                type: .error
+            )
             return
         }
 
@@ -68,15 +69,14 @@ extension AudioPlayer {
     }
 
     private func scheduleBuffer(at audioTime: AVAudioTime?,
-                                completionCallbackType: AVAudioPlayerNodeCompletionCallbackType = .dataPlayedBack)
-    {
+                                completionCallbackType: AVAudioPlayerNodeCompletionCallbackType = .dataPlayedBack) {
         if playerNode.outputFormat(forBus: 0) != buffer?.format {
             Log("Format of the buffer doesn't match the player")
             Log("Player", playerNode.outputFormat(forBus: 0), "Buffer", buffer?.format)
             updateBuffer()
         }
 
-        guard let buffer = buffer else {
+        guard let buffer else {
             Log("Failed to fill buffer")
             return
         }

@@ -276,7 +276,7 @@ open class AppleSequencer: NSObject {
 
         var tempos = [(MusicTimeStamp, Double)]()
 
-        if let tempoTrack = tempoTrack {
+        if let tempoTrack {
             MusicTrackManager.iterateMusicTrack(tempoTrack) { _, eventTime, eventType, eventData, _, _ in
                 if eventType == kMusicEventType_ExtendedTempo {
                     if let data = eventData?.bindMemory(to: ExtendedTempoEvent.self, capacity: 1) {
@@ -336,8 +336,8 @@ open class AppleSequencer: NSObject {
         }
 
         let timeSignatureMetaEventByte: MIDIByte = 0x58
-        MusicTrackManager.iterateMusicTrack(unwrappedTempoTrack) { _, eventTime, eventType, eventData, dataSize, _ in
-            guard let eventData = eventData else { return }
+        MusicTrackManager.iterateMusicTrack(unwrappedTempoTrack) { _, eventTime, eventType, eventData, _, _ in
+            guard let eventData else { return }
             guard eventType == kMusicEventType_Meta else { return }
 
             let metaEventPointer = UnsafeMIDIMetaEventPointer(eventData)
@@ -390,8 +390,7 @@ open class AppleSequencer: NSObject {
                                       timeSignature: TimeSignature,
                                       ticksPerMetronomeClick: MIDIByte = 24,
                                       thirtySecondNotesPerQuarter: MIDIByte = 8,
-                                      clearExistingEvents: Bool = true)
-    {
+                                      clearExistingEvents: Bool = true) {
         var tempoTrack: MusicTrack?
         if let existingSequence = sequence {
             MusicSequenceGetTempoTrack(existingSequence, &tempoTrack)
@@ -836,7 +835,7 @@ open class AppleSequencer: NSObject {
     /// Returns the host time that will be (or was) played at the specified beat.
     /// This function is valid only if the music player is playing.
     public func hostTime(forBeats inBeats: AVMusicTimeStamp) throws -> UInt64 {
-        guard let musicPlayer = musicPlayer, isPlaying else {
+        guard let musicPlayer, isPlaying else {
             throw MusicPlayerTimeConversionError.musicPlayerIsNotPlaying
         }
         var hostTime: UInt64 = 0
@@ -850,7 +849,7 @@ open class AppleSequencer: NSObject {
     /// Returns the beat that will be (or was) played at the specified host time.
     /// This function is valid only if the music player is playing.
     public func beats(forHostTime inHostTime: UInt64) throws -> AVMusicTimeStamp {
-        guard let musicPlayer = musicPlayer, isPlaying else {
+        guard let musicPlayer, isPlaying else {
             throw MusicPlayerTimeConversionError.musicPlayerIsNotPlaying
         }
         var beats: MusicTimeStamp = 0

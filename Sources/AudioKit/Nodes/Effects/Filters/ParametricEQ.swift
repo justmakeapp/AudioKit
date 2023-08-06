@@ -21,8 +21,8 @@ public class ParametricEQ: Node {
         identifier: "centerFreq",
         name: "Center Freq",
         address: AUParameterAddress(kParametricEQParam_CenterFreq),
-        defaultValue: 2000,
-        range: 20 ... 22050,
+        defaultValue: 2_000,
+        range: 20 ... 22_050,
         unit: .hertz
     )
 

@@ -321,7 +321,7 @@ class MusicTrackManagerTests: XCTestCase {
 
     func testSetMIDIOutput_willShowErrorWithInvalidPlayerState() {
         let sequencer = AppleSequencer()
-        let endpoint = MIDIEndpointRef(1234567)
+        let endpoint = MIDIEndpointRef(1_234_567)
         var trackEndpoint = MIDIEndpointRef()
         guard let newTrack = sequencer.newTrack() else {
             XCTFail("Sequencer track couldn't be created.")
@@ -408,8 +408,7 @@ extension MusicTrackManager {
     }
 
     func hasNote(atPosition position: MusicTimeStamp,
-                 withNoteNumber noteNumber: MIDINoteNumber) -> Bool
-    {
+                 withNoteNumber noteNumber: MIDINoteNumber) -> Bool {
         var noteFound = false
 
         iterateThroughEvents { eventTime, eventType, eventData in
@@ -426,14 +425,12 @@ extension MusicTrackManager {
     }
 
     func doesNotHaveNote(atPosition position: MusicTimeStamp,
-                         withNoteNumber noteNumber: MIDINoteNumber) -> Bool
-    {
+                         withNoteNumber noteNumber: MIDINoteNumber) -> Bool {
         return !hasNote(atPosition: position, withNoteNumber: noteNumber)
     }
 
     func addNote(withNumber noteNumber: MIDINoteNumber,
-                 atPosition position: MusicTimeStamp)
-    {
+                 atPosition position: MusicTimeStamp) {
         add(
             noteNumber: noteNumber,
             velocity: 127,

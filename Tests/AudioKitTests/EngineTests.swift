@@ -10,7 +10,7 @@ class EngineTests: XCTestCase {
     func testEngineSampleRateGraphConsistency() {
         let previousFormat = Settings.audioFormat
 
-        let newRate: Double = 48000
+        let newRate: Double = 48_000
         guard let newAudioFormat = AVAudioFormat(standardFormatWithSampleRate: newRate,
                                                  channels: 2) else {
             XCTFail("Failed to create format at \(newRate)")
@@ -52,11 +52,11 @@ class EngineTests: XCTestCase {
     func testEngineSampleRateChanged() {
         let previousFormat = Settings.audioFormat
 
-        guard let audioFormat441k = AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 2) else {
+        guard let audioFormat441k = AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: 2) else {
             XCTFail("Failed to create format at 44.1k")
             return
         }
-        guard let audioFormat48k = AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 2) else {
+        guard let audioFormat48k = AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 2) else {
             XCTFail("Failed to create format at 48k")
             return
         }
@@ -111,39 +111,39 @@ class EngineTests: XCTestCase {
     }
 
     /*
-    func testEngineSwitchOutputWhileRunning() {
-        let engine = AudioEngine()
-        let url1 = Bundle.module.url(forResource: "12345", withExtension: "wav", subdirectory: "TestResources")!
-        let input1 = AudioPlayer(url: url1)!
-        let url2 = Bundle.module.url(forResource: "drumloop", withExtension: "wav", subdirectory: "TestResources")!
-        let input2 = AudioPlayer(url: url2)!
-        engine.output = input1
+        func testEngineSwitchOutputWhileRunning() {
+            let engine = AudioEngine()
+            let url1 = Bundle.module.url(forResource: "12345", withExtension: "wav", subdirectory: "TestResources")!
+            let input1 = AudioPlayer(url: url1)!
+            let url2 = Bundle.module.url(forResource: "drumloop", withExtension: "wav", subdirectory: "TestResources")!
+            let input2 = AudioPlayer(url: url2)!
+            engine.output = input1
 
-        do {
-            try engine.start()
-        } catch let error as NSError {
-            Log(error, type: .error)
-            XCTFail("Failed to start engine")
+            do {
+                try engine.start()
+            } catch let error as NSError {
+                Log(error, type: .error)
+                XCTFail("Failed to start engine")
+            }
+
+            XCTAssertTrue(engine.avEngine.isRunning, "engine isn't running")
+            input1.start()
+
+            // sleep(1) // for simple realtime check
+
+            // change the output - will stop the engine
+            engine.output = input2
+
+            // is it started again?
+            XCTAssertTrue(engine.avEngine.isRunning)
+
+            input2.start()
+
+            // sleep(1) // for simple realtime check
+
+            engine.stop()
         }
-
-        XCTAssertTrue(engine.avEngine.isRunning, "engine isn't running")
-        input1.start()
-
-        // sleep(1) // for simple realtime check
-
-        // change the output - will stop the engine
-        engine.output = input2
-
-        // is it started again?
-        XCTAssertTrue(engine.avEngine.isRunning)
-
-        input2.start()
-
-        // sleep(1) // for simple realtime check
-
-        engine.stop()
-    }
- */
+     */
 
     func testConnectionTreeDescriptionForNilMainMixerNode() {
         let engine = AudioEngine()
@@ -187,9 +187,9 @@ class EngineTests: XCTestCase {
     }
 
     #if os(macOS)
-    func testAudioDevices() {
-        XCTAssert(AudioEngine.devices.count > 0)
-    }
+        func testAudioDevices() {
+            XCTAssert(AudioEngine.devices.count > 0)
+        }
     #endif
 
     func testOutputDevices() {

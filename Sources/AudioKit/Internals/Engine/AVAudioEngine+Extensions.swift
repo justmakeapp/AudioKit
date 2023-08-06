@@ -19,13 +19,12 @@ public extension AVAudioEngine {
     ///
     @available(iOS 11.0, macOS 10.13, tvOS 11.0, *)
     func render(to audioFile: AVAudioFile,
-                maximumFrameCount: AVAudioFrameCount = 4096,
+                maximumFrameCount: AVAudioFrameCount = 4_096,
                 duration: Double,
                 renderUntilSilent: Bool = false,
                 silenceThreshold: Float = 0.00005,
                 prerender: (() -> Void)? = nil,
-                progress progressHandler: ((Double) -> Void)? = nil) throws
-    {
+                progress progressHandler: ((Double) -> Void)? = nil) throws {
         guard duration >= 0 else {
             throw NSError(domain: "AVAudioEngine ext", code: 1,
                           userInfo: [NSLocalizedDescriptionKey: "Seconds needs to be a positive value"])

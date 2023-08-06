@@ -16,7 +16,7 @@ struct UnsafeMIDIMetaEventPointer {
     }
 
     init?(_ pointer: UnsafeRawPointer?) {
-        guard let pointer = pointer else {
+        guard let pointer else {
             return nil
         }
         self.init(pointer)

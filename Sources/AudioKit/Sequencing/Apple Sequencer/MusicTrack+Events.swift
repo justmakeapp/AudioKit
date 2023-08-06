@@ -109,8 +109,7 @@ public extension MusicTrackManager {
         while hasNextEvent.boolValue {
             MusicEventIteratorGetEventInfo(iterator, &eventTime, &eventType, &eventData, &eventDataSize)
             if type == nil || type == eventType,
-               let data = eventData
-            {
+               let data = eventData {
                 events?.append(AppleMIDIEvent(time: eventTime, type: eventType, data: data, dataSize: eventDataSize))
             }
             MusicEventIteratorNextEvent(iterator)

@@ -26,8 +26,8 @@ public final class MultiChannelInputNodeTap {
     /// A simple name and channel pair for each channel being recorded
     public private(set) var fileChannels: [FileChannel]? {
         didSet {
-            guard let fileChannels = fileChannels else { return }
-            channelMap = fileChannels.map { $0.channel }
+            guard let fileChannels else { return }
+            channelMap = fileChannels.map(\.channel)
         }
     }
 
@@ -70,7 +70,7 @@ public final class MultiChannelInputNodeTap {
 
     /// sample rate for all formats and files, this will be pulled from the
     /// format of the AVAudioInputNode
-    public private(set) var sampleRate: Double = 48000
+    public private(set) var sampleRate: Double = 48_000
 
     /// fileFormat and bufferFormat
     public private(set) var channels: UInt32 = 1
@@ -78,7 +78,7 @@ public final class MultiChannelInputNodeTap {
     /// fileFormat only
     public private(set) var bitsPerChannel: UInt32 = 24
 
-    private var _bufferSize: AVAudioFrameCount = 2048
+    private var _bufferSize: AVAudioFrameCount = 2_048
 
     /// The requested size of the incoming buffers. The implementation may choose another size.
     /// I'm seeing it set to 4800 on macOS in general. Given that I'm unclear why they offer
@@ -143,8 +143,8 @@ public final class MultiChannelInputNodeTap {
 
     /// How long the class was recording based on the startedAtTime and stoppedAtTime timestamps
     public var durationRecorded: TimeInterval? {
-        guard let startedAtTime = startedAtTime,
-              let stoppedAtTime = stoppedAtTime
+        guard let startedAtTime,
+              let stoppedAtTime
         else {
             return nil
         }
@@ -153,8 +153,10 @@ public final class MultiChannelInputNodeTap {
     }
 
     /// This property is used to map input channels from an input (source) to a destination.
-    /// The number of channels represented in the channel map is the number of channels of the destination. The channel map entries
-    /// contain a channel number of the source that should be mapped to that destination channel. If -1 is specified, then that
+    /// The number of channels represented in the channel map is the number of channels of the destination. The channel
+    /// map entries
+    /// contain a channel number of the source that should be mapped to that destination channel. If -1 is specified,
+    /// then that
     /// destination channel will not contain any channel from the source (so it will be silent)
     private var _channelMap: [Int32] = []
     private var channelMap: [Int32] {
@@ -178,8 +180,7 @@ public final class MultiChannelInputNodeTap {
                                              kAudioUnitScope_Output,
                                              inputElement,
                                              newValue,
-                                             channelMapSize)
-            {
+                                             channelMapSize) {
                 Log("Failed setting channel map")
                 return
             }
@@ -283,10 +284,10 @@ public final class MultiChannelInputNodeTap {
     }
 
     private func createFiles() {
-        guard let directory = directory,
-              let fileFormat = fileFormat,
-              let recordFormat = recordFormat,
-              let fileChannels = fileChannels
+        guard let directory,
+              let fileFormat,
+              let recordFormat,
+              let fileChannels
         else {
             Log("File Format is nil")
             return
@@ -338,7 +339,7 @@ public final class MultiChannelInputNodeTap {
         let pathExtension = url.pathExtension
         let baseFilename = url.deletingPathExtension().lastPathComponent
 
-        for i in startIndex ... 10000 {
+        for i in startIndex ... 10_000 {
             let filename = "\(baseFilename) #\(i)"
             let test = directory.appendingPathComponent(filename)
                 .appendingPathExtension(pathExtension)
@@ -349,7 +350,7 @@ public final class MultiChannelInputNodeTap {
 
     // AVAudioNodeTapBlock
     private func process(buffer: AVAudioPCMBuffer, time: AVAudioTime) {
-        guard let bufferFormat = bufferFormat else {
+        guard let bufferFormat else {
             Log("bufferFormat is nil")
             return
         }

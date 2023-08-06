@@ -13,8 +13,7 @@ public extension AudioPlayer {
     func play(from startTime: TimeInterval? = nil,
               to endTime: TimeInterval? = nil,
               at when: AVAudioTime? = nil,
-              completionCallbackType: AVAudioPlayerNodeCompletionCallbackType = .dataPlayedBack)
-    {
+              completionCallbackType: AVAudioPlayerNodeCompletionCallbackType = .dataPlayedBack) {
         guard let engine = playerNode.engine else {
             Log("🛑 Error: AudioPlayer must be attached before playback.", type: .error)
             return
@@ -32,7 +31,7 @@ public extension AudioPlayer {
 
         if let nodeTime = playerNode.lastRenderTime, let whenTime = when {
             timeBeforePlay = whenTime.timeIntervalSince(otherTime: nodeTime) ?? 0
-        } else if let playerTime = playerTime {
+        } else if let playerTime {
             timeBeforePlay = playerTime
         }
 
@@ -75,7 +74,7 @@ public extension AudioPlayer {
     func seek(time seekTime: TimeInterval) {
         guard seekTime != 0 else { return }
 
-        guard let file = file else { return }
+        guard let file else { return }
         let sampleRate = file.fileFormat.sampleRate
 
         let startTime = currentTime + seekTime
@@ -121,7 +120,7 @@ public extension AudioPlayer {
     /// The start and end positions are 0 and 1, respectively.
     var currentPosition: Double {
         let duration = editEndTime - editStartTime
-        return (currentTime / duration).clamped(to: 0...1)
+        return (currentTime / duration).clamped(to: 0 ... 1)
     }
 
     /// The current playback time, in seconds.
@@ -133,14 +132,14 @@ public extension AudioPlayer {
         let duration = editEndTime - startTime
 
         guard let playerTime = isBuffered && isLooping
-                ? playerTime?.truncatingRemainder(dividingBy: duration)
-                : playerTime
+            ? playerTime?.truncatingRemainder(dividingBy: duration)
+            : playerTime
         else { return startTime }
 
         let timeBeforePlay = playerTime >= timeBeforePlay ? timeBeforePlay : 0
         let time = startTime + playerTime - timeBeforePlay
 
-        return time.clamped(to: startTime...startTime + duration)
+        return time.clamped(to: startTime ... startTime + duration)
     }
 
     /// The time the node has been playing,  in seconds. This is `nil`

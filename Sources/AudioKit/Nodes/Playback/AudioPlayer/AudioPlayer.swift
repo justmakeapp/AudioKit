@@ -181,7 +181,7 @@ public class AudioPlayer: Node {
     var bufferOptions: AVAudioPlayerNodeBufferOptions = .interrupts
 
     var bufferDuration: TimeInterval {
-        guard let buffer = buffer else { return 0 }
+        guard let buffer else { return 0 }
         return TimeInterval(buffer.frameLength) / buffer.format.sampleRate
     }
 
@@ -266,13 +266,11 @@ public class AudioPlayer: Node {
     ///   - preserveEditTime: Boolean - keep the previous edit time region? (default: false)
     public func load(file: AVAudioFile,
                      buffered: Bool? = nil,
-                     preserveEditTime: Bool = false) throws
-    {
+                     preserveEditTime: Bool = false) throws {
         var formatHasChanged = false
 
         if let currentFile = self.file,
-           currentFile.fileFormat != file.fileFormat
-        {
+           currentFile.fileFormat != file.fileFormat {
             Log("Format has changed, player will be reconnected with format", file.fileFormat)
             engine?.disconnectNodeInput(playerNode)
             formatHasChanged = true
@@ -290,7 +288,7 @@ public class AudioPlayer: Node {
             makeInternalConnections()
         }
 
-        if let buffered = buffered {
+        if let buffered {
             isBuffered = buffered
         }
 
@@ -312,11 +310,10 @@ extension AudioPlayer: HasInternalConnections {
     var isPlayerConnectedToMixerNode: Bool {
         var iBus = 0
         let engine = playerNode.engine
-        if let engine = engine {
+        if let engine {
             while iBus < playerNode.numberOfOutputs {
                 for playercp in engine.outputConnectionPoints(for: playerNode, outputBus: iBus)
-                    where playercp.node == mixerNode
-                {
+                    where playercp.node == mixerNode {
                     return true
                 }
                 iBus += 1
@@ -327,7 +324,7 @@ extension AudioPlayer: HasInternalConnections {
 
     /// called in the connection chain to attach the playerNode
     public func makeInternalConnections() {
-        guard let engine = engine else {
+        guard let engine else {
             Log("Engine is nil", type: .error)
             return
         }

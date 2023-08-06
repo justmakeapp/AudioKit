@@ -4,9 +4,8 @@ import XCTest
 
 extension AudioPlayerFileTests {
     func realtimeTestReversed(from startTime: TimeInterval = 0,
-                              to endTime: TimeInterval = 0)
-    {
-        guard let countingURL = countingURL else {
+                              to endTime: TimeInterval = 0) {
+        guard let countingURL else {
             XCTFail("Didn't find the 12345.wav")
             return
         }
@@ -258,7 +257,11 @@ extension AudioPlayerFileTests {
         player.play()
         wait(for: 2)
 
-        guard let url2 = Bundle.module.url(forResource: "twoNotes-2", withExtension: "aiff", subdirectory: "TestResources") else {
+        guard let url2 = Bundle.module.url(
+            forResource: "twoNotes-2",
+            withExtension: "aiff",
+            subdirectory: "TestResources"
+        ) else {
             XCTFail("Failed to create file")
             return
         }
@@ -275,7 +278,11 @@ extension AudioPlayerFileTests {
 
         wait(for: 1.5)
 
-        guard let url3 = Bundle.module.url(forResource: "twoNotes-3", withExtension: "aiff", subdirectory: "TestResources") else {
+        guard let url3 = Bundle.module.url(
+            forResource: "twoNotes-3",
+            withExtension: "aiff",
+            subdirectory: "TestResources"
+        ) else {
             XCTFail("Failed to create file")
             return
         }
@@ -293,8 +300,12 @@ extension AudioPlayerFileTests {
         wait(for: 2)
 
         // load a buffer
-        guard let url4 = Bundle.module.url(forResource: "chromaticScale-2", withExtension: "aiff", subdirectory: "TestResources"),
-              let buffer = try? AVAudioPCMBuffer(url: url4)
+        guard let url4 = Bundle.module.url(
+            forResource: "chromaticScale-2",
+            withExtension: "aiff",
+            subdirectory: "TestResources"
+        ),
+            let buffer = try? AVAudioPCMBuffer(url: url4)
         else {
             XCTFail("Failed to create file or buffer")
             return
@@ -307,8 +318,12 @@ extension AudioPlayerFileTests {
         wait(for: 1.5)
 
         // load a file after a buffer
-        guard let url5 = Bundle.module.url(forResource: "chromaticScale-1", withExtension: "aiff", subdirectory: "TestResources"),
-              let file = try? AVAudioFile(forReading: url5)
+        guard let url5 = Bundle.module.url(
+            forResource: "chromaticScale-1",
+            withExtension: "aiff",
+            subdirectory: "TestResources"
+        ),
+            let file = try? AVAudioFile(forReading: url5)
         else {
             XCTFail("Failed to create file or buffer")
             return
@@ -323,7 +338,7 @@ extension AudioPlayerFileTests {
     }
 
     func realtimeTestSeek(buffered: Bool = false) {
-        guard let countingURL = countingURL else {
+        guard let countingURL else {
             XCTFail("Didn't find the 12345.wav")
             return
         }
@@ -389,11 +404,11 @@ extension AudioPlayerFileTests {
     }
 
     func realtimeTestPlayerStatus() {
-        guard let countingURL = countingURL else {
+        guard let countingURL else {
             XCTFail("Didn't find the 12345.wav")
             return
         }
-        guard let drumloopURL = drumloopURL else {
+        guard let drumloopURL else {
             XCTFail("Didn't find the 12345.wav")
             return
         }
@@ -427,11 +442,11 @@ extension AudioPlayerFileTests {
     /// Files should play back at normal pitch for both buffered and streamed
     func realtimeTestMixedSampleRates(buffered: Bool = false) {
         // this file is 44.1k
-        guard let countingURL = countingURL else {
+        guard let countingURL else {
             XCTFail("Didn't find the 12345.wav")
             return
         }
-        guard let audioFormat = AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 2) else {
+        guard let audioFormat = AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 2) else {
             XCTFail("Failed to create 48k format")
             return
         }
@@ -441,7 +456,7 @@ extension AudioPlayerFileTests {
         Self.tempFiles.append(countingURL48k)
 
         let wav48k = FormatConverter.Options(pcmFormat: .wav,
-                                             sampleRate: 48000,
+                                             sampleRate: 48_000,
                                              bitDepth: 16,
                                              channels: 1)
         let converter = FormatConverter(inputURL: countingURL,
@@ -449,7 +464,7 @@ extension AudioPlayerFileTests {
                                         options: wav48k)
 
         converter.start { error in
-            if let error = error {
+            if let error {
                 XCTFail(error.localizedDescription)
                 return
             }
@@ -461,8 +476,7 @@ extension AudioPlayerFileTests {
 
     private func processMixedSampleRates(urls: [URL],
                                          audioFormat: AVAudioFormat,
-                                         buffered: Bool = false)
-    {
+                                         buffered: Bool = false) {
         Settings.audioFormat = audioFormat
 
         let engine = AudioEngine()

@@ -18,7 +18,12 @@ open class RawDataTap: BaseTap {
     ///   - input: Node to analyze
     ///   - bufferSize: Size of buffer to analyze
     ///   - handler: Callback to call when results are available
-    public init(_ input: Node, bufferSize: UInt32 = 1_024, callbackQueue: DispatchQueue, handler: @escaping Handler = { _ in }) {
+    public init(
+        _ input: Node,
+        bufferSize: UInt32 = 1_024,
+        callbackQueue: DispatchQueue,
+        handler: @escaping Handler = { _ in }
+    ) {
         self.data = Array(repeating: 0.0, count: Int(bufferSize))
         self.handler = handler
         super.init(input, bufferSize: bufferSize, callbackQueue: callbackQueue)
@@ -28,7 +33,7 @@ open class RawDataTap: BaseTap {
     /// - Parameters:
     ///   - buffer: Buffer to analyze
     ///   - time: Unused in this case
-    override open func doHandleTapBlock(buffer: AVAudioPCMBuffer, at time: AVAudioTime) {
+    override open func doHandleTapBlock(buffer: AVAudioPCMBuffer, at _: AVAudioTime) {
         guard buffer.floatChannelData != nil else { return }
 
         let offset = Int(buffer.frameCapacity - buffer.frameLength)
@@ -50,24 +55,23 @@ open class RawDataTap: BaseTap {
 }
 
 public actor RawDataTap2: Tap {
-
     /// Callback type
     public typealias Handler = ([Float]) -> Void
 
     private let handler: Handler
 
-    public init(_ input: Node, handler: @escaping Handler = { _ in }) {
+    public init(_: Node, handler: @escaping Handler = { _ in }) {
         self.handler = handler
     }
 
-    public func handleTap(buffer: AVAudioPCMBuffer, at time: AVAudioTime) async {
+    public func handleTap(buffer: AVAudioPCMBuffer, at _: AVAudioTime) async {
         guard buffer.floatChannelData != nil else { return }
 
         let offset = Int(buffer.frameCapacity - buffer.frameLength)
         var data = [Float]()
         if let tail = buffer.floatChannelData?[0] {
             // XXX: fixme hard coded 1024
-            for idx in 0 ..< 1024 {
+            for idx in 0 ..< 1_024 {
                 data.append(tail[offset + Int(idx)])
             }
         }

@@ -26,7 +26,7 @@ class FFTTapTests: XCTestCase {
         var fftData: [Int] = []
 
         let expect = expectation(description: "wait for buckets")
-        let targetFrequencies: [Float] = [88, 258, 433, 605, 777, 949, 1122, 1294, 1467, 1639]
+        let targetFrequencies: [Float] = [88, 258, 433, 605, 777, 949, 1_122, 1_294, 1_467, 1_639]
         let expectedBuckets: [Int] = [8, 24, 40, 56, 72, 88, 104, 120, 136, 152]
 
         let tap = FFTTap(mixer, callbackQueue: .main) { fft in
@@ -81,7 +81,7 @@ class FFTTapTests: XCTestCase {
         var fftData: [Int] = []
 
         let expect = expectation(description: "wait for buckets")
-        let targetFrequencies: [Float] = [88, 258, 433, 605, 777, 949, 1122, 1294, 1467, 1639]
+        let targetFrequencies: [Float] = [88, 258, 433, 605, 777, 949, 1_122, 1_294, 1_467, 1_639]
         let expectedBuckets: [Int] = [8, 24, 40, 56, 72, 88, 104, 120, 136, 152]
 
         let tap = FFTTap(oscillator, callbackQueue: .main) { fft in

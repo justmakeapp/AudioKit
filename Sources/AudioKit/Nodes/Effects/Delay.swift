@@ -59,8 +59,8 @@ public class Delay: Node {
         identifier: "lowPassCutoff",
         name: "Low Pass Cutoff Frequency",
         address: 3,
-        defaultValue: 15000,
-        range: 10 ... 22050,
+        defaultValue: 15_000,
+        range: 10 ... 22_050,
         unit: .hertz
     )
 

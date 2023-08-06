@@ -58,7 +58,7 @@ public class AmplitudeTap: BaseTap {
     /// - Parameters:
     ///   - buffer: Buffer to analyze
     ///   - time: Unused in this case
-    override public func doHandleTapBlock(buffer: AVAudioPCMBuffer, at time: AVAudioTime) {
+    override public func doHandleTapBlock(buffer: AVAudioPCMBuffer, at _: AVAudioTime) {
         guard let floatData = buffer.floatChannelData else { return }
 
         let channelCount = Int(buffer.format.channelCount)

@@ -16,7 +16,8 @@
 /// This can be done using `Node.outputFormat`.
 ///
 /// Additionally, you might need to set audio format channel layout.
-/// Even though it seems like `kAudioChannelLayoutTag_DiscreteInOrder` should be used, you will likely need `kAudioChannelLayoutTag_Unknown`
+/// Even though it seems like `kAudioChannelLayoutTag_DiscreteInOrder` should be used, you will likely need
+/// `kAudioChannelLayoutTag_Unknown`
 /// See:
 /// https://www.mail-archive.com/coreaudio-api@lists.apple.com/msg01143.html
 /// ```
@@ -35,14 +36,14 @@ public class MatrixMixer: Node {
 
     public let unit = instantiate(
         componentDescription:
-            AudioComponentDescription(
-                componentType: kAudioUnitType_Mixer,
-                componentSubType: kAudioUnitSubType_MatrixMixer,
-                componentManufacturer: kAudioUnitManufacturer_Apple,
-                componentFlags: 0,
-                componentFlagsMask: 0
-            )
+        AudioComponentDescription(
+            componentType: kAudioUnitType_Mixer,
+            componentSubType: kAudioUnitSubType_MatrixMixer,
+            componentManufacturer: kAudioUnitManufacturer_Apple,
+            componentFlags: 0,
+            componentFlagsMask: 0
         )
+    )
 
     public init(_ inputs: [Node]) {
         self.inputs = inputs
@@ -70,7 +71,7 @@ public class MatrixMixer: Node {
         )
     }
 
-    private static let masterVolumeElement: AudioUnitElement = 0xFFFFFFFF
+    private static let masterVolumeElement: AudioUnitElement = 0xFFFF_FFFF
 
     /// Matrix Mixer master volume
     /// This is by default set to 0
@@ -103,10 +104,10 @@ public class MatrixMixer: Node {
     /// It is important to do this after the engine has started
     /// and node was connected. Otherwise, it will have no effect.
     public func unmuteAllInputsAndOutputs() {
-        for i in 0..<inputChannelCount {
+        for i in 0 ..< inputChannelCount {
             set(volume: 1, inputChannelIndex: Int(i))
         }
-        for i in 0..<outputChannelCount {
+        for i in 0 ..< outputChannelCount {
             set(volume: 1, outputChannelIndex: Int(i))
         }
     }
@@ -143,7 +144,7 @@ public class MatrixMixer: Node {
                 unit.audioUnit,
                 kMatrixMixerParam_Volume,
                 kAudioUnitScope_Global,
-                (UInt32(crosspoint.0) << 16) | (UInt32(crosspoint.1) & 0x0000FFFF),
+                (UInt32(crosspoint.0) << 16) | (UInt32(crosspoint.1) & 0x0000_FFFF),
                 volume,
                 0
             )
@@ -179,17 +180,17 @@ public class MatrixMixer: Node {
         )
         let chunkSize = Int(outputChannelCount + 1)
         return stride(from: 0, to: count, by: chunkSize).map {
-            Array(volumes[Int($0)..<min(Int($0) + chunkSize, volumes.count)])
+            Array(volumes[Int($0) ..< min(Int($0) + chunkSize, volumes.count)])
         }
     }
 
     /// It might be tricky to configure matrix mixer properly.
     /// Convenience method to print matrix levels and help you debugging.
     public func printMatrixLevels() {
-        for (channel, chunk) in matrixLevels[0..<matrixLevels.count - 1].enumerated() {
-            print("Input Channel \(channel) - \(chunk[0..<chunk.count - 1]), Input Volume \(chunk[chunk.count - 1])")
+        for (channel, chunk) in matrixLevels[0 ..< matrixLevels.count - 1].enumerated() {
+            print("Input Channel \(channel) - \(chunk[0 ..< chunk.count - 1]), Input Volume \(chunk[chunk.count - 1])")
         }
         let last = matrixLevels[matrixLevels.count - 1]
-        print("Output Volumes - \(last[0..<last.count - 1]), Master Volume \(last[last.count - 1])")
+        print("Output Volumes - \(last[0 ..< last.count - 1]), Master Volume \(last[last.count - 1])")
     }
 }

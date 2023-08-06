@@ -80,7 +80,7 @@ public class Mixer: Node, NamedNode {
 
         inputs.append(node)
 
-        if let mixerReset = mixerReset {
+        if let mixerReset {
             mixerAU.engine?.detach(mixerReset)
         }
 

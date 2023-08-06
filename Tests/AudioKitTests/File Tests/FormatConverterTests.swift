@@ -17,7 +17,7 @@ class FormatConverterTests: AudioFileTestCase {
 
     func testbitDepthRule() throws {
         var options = FormatConverter.Options()
-        options.sampleRate = 48000
+        options.sampleRate = 48_000
         options.bitDepth = UInt32(24)
         options.format = .wav
         options.eraseFile = true
@@ -28,7 +28,7 @@ class FormatConverterTests: AudioFileTestCase {
 
     func testConvertAIFF44k16bit() throws {
         var options = FormatConverter.Options()
-        options.sampleRate = 44100
+        options.sampleRate = 44_100
         options.bitDepth = UInt32(16)
         options.format = .aif
         options.eraseFile = true
@@ -39,7 +39,7 @@ class FormatConverterTests: AudioFileTestCase {
 
     func testConvertCAF96k32bit() throws {
         var options = FormatConverter.Options()
-        options.sampleRate = 96000
+        options.sampleRate = 96_000
         options.bitDepth = UInt32(32)
         options.format = .caf
         options.eraseFile = true
@@ -50,8 +50,8 @@ class FormatConverterTests: AudioFileTestCase {
 
     func testConvertM4A24Bit() throws {
         var options = FormatConverter.Options()
-        options.sampleRate = 44100
-        options.bitRate = 256000
+        options.sampleRate = 44_100
+        options.bitRate = 256_000
         options.format = .m4a
         options.eraseFile = true
         options.bitDepthRule = .any
@@ -61,8 +61,8 @@ class FormatConverterTests: AudioFileTestCase {
 
     func testConvertMonoM4A24Bit() throws {
         var options = FormatConverter.Options()
-        options.sampleRate = 48000
-        options.bitRate = 320000
+        options.sampleRate = 48_000
+        options.bitRate = 320_000
         options.format = .m4a
         options.eraseFile = true
         options.bitDepthRule = .any
@@ -73,8 +73,7 @@ class FormatConverterTests: AudioFileTestCase {
     // MARK: helpers
 
     private func convert(with options: FormatConverter.Options,
-                         input: URL? = nil) throws
-    {
+                         input: URL? = nil) throws {
         guard let format = options.format,
               let sampleRate = options.sampleRate
         else {
@@ -104,7 +103,7 @@ class FormatConverterTests: AudioFileTestCase {
         let converter = FormatConverter(inputURL: inputFile, outputURL: outputURL, options: options)
 
         converter.start { error in
-            if let error = error {
+            if let error {
                 Log(error, type: .error)
             }
             expectation.fulfill()
@@ -120,7 +119,9 @@ class FormatConverterTests: AudioFileTestCase {
         let streamDescription: AudioStreamBasicDescription = avFile.fileFormat.streamDescription.pointee
 
         guard avFile.fileFormat.sampleRate == sampleRate else {
-            throw createError(message: "Incorrect Sample Rate of \(avFile.fileFormat.sampleRate), should be \(sampleRate)")
+            throw createError(
+                message: "Incorrect Sample Rate of \(avFile.fileFormat.sampleRate), should be \(sampleRate)"
+            )
         }
 
         guard outputURL.pathExtension == format.rawValue else {
@@ -129,7 +130,9 @@ class FormatConverterTests: AudioFileTestCase {
 
         if streamDescription.mFormatID == kAudioFormatLinearPCM, let bitDepth = options.bitDepth {
             guard streamDescription.mBitsPerChannel == bitDepth else {
-                throw createError(message: "Incorrect bitDepth of \(streamDescription.mBitsPerChannel), should be \(bitDepth)")
+                throw createError(
+                    message: "Incorrect bitDepth of \(streamDescription.mBitsPerChannel), should be \(bitDepth)"
+                )
             }
         }
     }

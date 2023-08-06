@@ -2,53 +2,45 @@
 
 #if !os(tvOS)
 
-import Foundation
+    import Foundation
 
-/// MIDI System Real Time Observer
-public protocol MIDISystemRealTimeObserver {
+    /// MIDI System Real Time Observer
+    public protocol MIDISystemRealTimeObserver {
+        /// Called when a midi start system message is received
+        ///
+        /// - Parameter srtListener: MIDISRTListener
+        func startSRT(listener: MIDISystemRealTimeListener)
 
-    /// Called when a midi start system message is received
-    ///
-    /// - Parameter srtListener: MIDISRTListener
-    func startSRT(listener: MIDISystemRealTimeListener)
+        /// Called when a midi stop system message is received
+        /// Stop should pause
+        ///
+        /// - Parameter srtListener: MIDISRTListener
+        func stopSRT(listener: MIDISystemRealTimeListener)
 
-    /// Called when a midi stop system message is received
-    /// Stop should pause
-    ///
-    /// - Parameter srtListener: MIDISRTListener
-    func stopSRT(listener: MIDISystemRealTimeListener)
-
-    /// Called when a midi continue system message is received
-    ///
-    /// - Parameter srtListener: MIDISRTListener
-    func continueSRT(listener: MIDISystemRealTimeListener)
-}
-
-/// Default handler methods for MIDI MMC Events
-extension MIDISystemRealTimeObserver {
-
-    func startSRT(listener: MIDISystemRealTimeListener) {
-
+        /// Called when a midi continue system message is received
+        ///
+        /// - Parameter srtListener: MIDISRTListener
+        func continueSRT(listener: MIDISystemRealTimeListener)
     }
 
-    func stopSRT(listener: MIDISystemRealTimeListener) {
+    /// Default handler methods for MIDI MMC Events
+    extension MIDISystemRealTimeObserver {
+        func startSRT(listener _: MIDISystemRealTimeListener) {}
 
+        func stopSRT(listener _: MIDISystemRealTimeListener) {}
+
+        func continueSRT(listener _: MIDISystemRealTimeListener) {}
+
+        /// Equality check
+        /// - Parameter listener: MIDI System Real-Time Observer
+        /// - Returns: Equality boolean
+        public func isEqualTo(_ listener: MIDISystemRealTimeObserver) -> Bool {
+            return self == listener
+        }
     }
 
-    func continueSRT(listener: MIDISystemRealTimeListener) {
-
+    func == (lhs: MIDISystemRealTimeObserver, rhs: MIDISystemRealTimeObserver) -> Bool {
+        return lhs.isEqualTo(rhs)
     }
-
-    /// Equality check
-    /// - Parameter listener: MIDI System Real-Time Observer
-    /// - Returns: Equality boolean
-    public func isEqualTo(_ listener: MIDISystemRealTimeObserver) -> Bool {
-        return self == listener
-    }
-}
-
-func == (lhs: MIDISystemRealTimeObserver, rhs: MIDISystemRealTimeObserver) -> Bool {
-    return lhs.isEqualTo(rhs)
-}
 
 #endif

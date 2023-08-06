@@ -3,7 +3,6 @@
 import Foundation
 
 struct MIDIFileHeaderChunk: MIDIFileChunk {
-
     var rawData: [MIDIByte]
 
     /// Initialize with data
@@ -14,12 +13,12 @@ struct MIDIFileHeaderChunk: MIDIFileChunk {
         else {
             return nil
         }
-        let lengthBytes = Array(data[4..<8])
+        let lengthBytes = Array(data[4 ..< 8])
         let length = Int(MIDIHelper.convertTo32Bit(msb: lengthBytes[0],
                                                    data1: lengthBytes[1],
                                                    data2: lengthBytes[2],
                                                    lsb: lengthBytes[3]))
-        rawData = Array(data.prefix(upTo: length + 8)) //the message + 4 byte header type, + 4 byte length
+        rawData = Array(data.prefix(upTo: length + 8)) // the message + 4 byte header type, + 4 byte length
         if isNotValid || !isHeader {
             return nil
         }
@@ -50,21 +49,21 @@ struct MIDIFileHeaderChunk: MIDIFileChunk {
 
     var ticksPerBeat: Int? {
         if timeFormat == .ticksPerBeat {
-            return Int(timeDivision & 0x7fff)
+            return Int(timeDivision & 0x7FFF)
         }
         return nil
     }
 
     var framesPerSecond: Int? {
         if timeFormat == .framesPerSecond {
-            return Int((timeDivision & 0x7f00) >> 8)
+            return Int((timeDivision & 0x7F00) >> 8)
         }
         return nil
     }
 
     var ticksPerFrame: Int? {
         if timeFormat == .framesPerSecond {
-            return Int(timeDivision & 0xff)
+            return Int(timeDivision & 0xFF)
         }
         return nil
     }
@@ -72,5 +71,4 @@ struct MIDIFileHeaderChunk: MIDIFileChunk {
     var timeDivision: UInt16 {
         return MIDIHelper.convertTo16Bit(msb: data[4], lsb: data[5])
     }
-
 }

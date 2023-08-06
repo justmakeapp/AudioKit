@@ -57,8 +57,7 @@ public extension AVAudioFile {
                                     from startTime: TimeInterval,
                                     to endTime: TimeInterval,
                                     fadeInTime: TimeInterval = 0,
-                                    fadeOutTime: TimeInterval = 0) -> AVAudioFile?
-    {
+                                    fadeOutTime: TimeInterval = 0) -> AVAudioFile? {
         guard let inputBuffer = toAVAudioPCMBuffer() else {
             Log("Error reading into input buffer", type: .error)
             return nil
@@ -70,8 +69,7 @@ public extension AVAudioFile {
         }
 
         if fadeInTime != 0 || fadeOutTime != 0,
-           let fadedBuffer = editedBuffer.fade(inTime: fadeInTime, outTime: fadeOutTime)
-        {
+           let fadedBuffer = editedBuffer.fade(inTime: fadeInTime, outTime: fadeOutTime) {
             editedBuffer = fadedBuffer
         }
 
@@ -94,8 +92,7 @@ public extension AVAudioFile {
                  fadeInTime: TimeInterval = 0,
                  fadeOutTime: TimeInterval = 0,
                  options: FormatConverter.Options? = nil,
-                 completionHandler: FormatConverter.FormatConverterCallback? = nil)
-    {
+                 completionHandler: FormatConverter.FormatConverterCallback? = nil) {
         func createError(message: String, code: Int = 1) -> NSError {
             let userInfo: [String: Any] = [NSLocalizedDescriptionKey: message]
             return NSError(domain: "io.audiokit.FormatConverter.error", code: code, userInfo: userInfo)
@@ -130,7 +127,7 @@ public extension AVAudioFile {
         let converter = FormatConverter(inputURL: tempFile, outputURL: outputURL, options: options)
         converter.start { error in
 
-            if let error = error {
+            if let error {
                 Log("Done, error", error, type: .error)
             }
 

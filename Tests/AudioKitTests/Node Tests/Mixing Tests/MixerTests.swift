@@ -23,7 +23,6 @@ class MixerTests: XCTestCase {
 }
 
 extension MixerTests {
-
     // Tests workaround for:
     // http://openradar.appspot.com/radar?id=5588189343383552
     func testWiringAfterEngineStart() {
@@ -61,7 +60,7 @@ extension MixerTests {
 
         engine.output = engineMixer
         try engine.start()
-        try await Task.sleep(for: .milliseconds(1000))
+        try await Task.sleep(for: .milliseconds(1_000))
         engine.pause()
 
         let subtreeMixer = Mixer()
@@ -79,6 +78,7 @@ extension MixerTests {
         // wait(for: player.duration)
         engine.stop()
     }
+
     // for waiting in the background for realtime testing
     private func wait(for interval: TimeInterval) {
         let delayExpectation = XCTestExpectation(description: "delayExpectation")

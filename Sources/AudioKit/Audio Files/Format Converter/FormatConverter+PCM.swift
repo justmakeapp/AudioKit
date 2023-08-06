@@ -6,16 +6,16 @@ import AVFoundation
 
 extension FormatConverter {
     func convertToPCM(completionHandler: FormatConverterCallback? = nil) {
-        guard let inputURL = inputURL else {
+        guard let inputURL else {
             completionHandler?(Self.createError(message: "Input file can't be nil."))
             return
         }
-        guard let outputURL = outputURL else {
+        guard let outputURL else {
             completionHandler?(Self.createError(message: "Output file can't be nil."))
             return
         }
 
-        guard let options = options, let outputFormat = options.format else {
+        guard let options, let outputFormat = options.format else {
             completionHandler?(Self.createError(message: "Options can't be nil."))
             return
         }
@@ -73,8 +73,7 @@ extension FormatConverter {
         if noErr != ExtAudioFileGetProperty(strongInputFile,
                                             kExtAudioFileProperty_FileDataFormat,
                                             &inputDescriptionSize,
-                                            &inputDescription)
-        {
+                                            &inputDescription) {
             completionHandler?(Self.createError(message: "Unable to get the input file data format."))
             return
         }
@@ -107,8 +106,7 @@ extension FormatConverter {
                                               &outputDescription,
                                               nil,
                                               AudioFileFlags.eraseFile.rawValue, // overwrite old file if present
-                                              &outputFile)
-        {
+                                              &outputFile) {
             completionProxy(error: Self.createError(message: "Unable to create output file at \(outputURL.path). " +
                                 "dstFormat \(outputDescription)"),
             completionHandler: completionHandler)
@@ -128,8 +126,7 @@ extension FormatConverter {
         if noErr != ExtAudioFileSetProperty(strongInputFile,
                                             kExtAudioFileProperty_ClientDataFormat,
                                             inputDescriptionSize,
-                                            &outputDescription)
-        {
+                                            &outputDescription) {
             completionProxy(error: Self.createError(message: "Unable to set data format on input file."),
                             completionHandler: completionHandler)
             return
@@ -138,13 +135,12 @@ extension FormatConverter {
         if noErr != ExtAudioFileSetProperty(strongOutputFile,
                                             kExtAudioFileProperty_ClientDataFormat,
                                             inputDescriptionSize,
-                                            &outputDescription)
-        {
+                                            &outputDescription) {
             completionProxy(error: Self.createError(message: "Unable to set the output file data format."),
                             completionHandler: completionHandler)
             return
         }
-        let bufferByteSize: UInt32 = 32768
+        let bufferByteSize: UInt32 = 32_768
         var srcBuffer = [UInt8](repeating: 0, count: Int(bufferByteSize))
         var sourceFrameOffset: UInt32 = 0
 
@@ -164,8 +160,7 @@ extension FormatConverter {
 
                 if noErr != ExtAudioFileRead(strongInputFile,
                                              &frameCount,
-                                             &fillBufList)
-                {
+                                             &fillBufList) {
                     completionProxy(error: Self.createError(message: "Error reading from the input file."),
                                     completionHandler: completionHandler)
                     return
@@ -177,8 +172,7 @@ extension FormatConverter {
 
                 if noErr != ExtAudioFileWrite(strongOutputFile,
                                               frameCount,
-                                              &fillBufList)
-                {
+                                              &fillBufList) {
                     completionProxy(error: Self.createError(message: "Error reading from the output file."),
                                     completionHandler: completionHandler)
                     return
@@ -194,8 +188,7 @@ extension FormatConverter {
 
     func createOutputDescription(options: Options,
                                  outputFormatID: AudioFormatID,
-                                 inputDescription: AudioStreamBasicDescription) -> AudioStreamBasicDescription
-    {
+                                 inputDescription: AudioStreamBasicDescription) -> AudioStreamBasicDescription {
         let mFormatID: AudioFormatID = kAudioFormatLinearPCM
 
         let mSampleRate = options.sampleRate ?? inputDescription.mSampleRate
