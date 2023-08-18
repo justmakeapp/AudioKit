@@ -57,7 +57,7 @@ public extension AVAudioPCMBuffer {
     struct Peak {
         /// Initialize the peak, to be able to use outside of AudioKit
         public init() {}
-        internal static let min: Float = -10_000.0
+        static let min: Float = -10_000.0
         /// Time of the peak
         public var time: Double = 0
         /// Frame position of the peak

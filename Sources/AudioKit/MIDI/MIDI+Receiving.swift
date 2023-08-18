@@ -17,7 +17,7 @@
     import AVFoundation
     import os.log
 
-    internal struct MIDISources: Collection {
+    struct MIDISources: Collection {
         typealias Index = Int
         typealias Element = MIDIEndpointRef
 

@@ -15,7 +15,7 @@
         public var client = MIDIClientRef()
 
         /// MIDI Client Name
-        internal let clientName: CFString = "AudioKit" as CFString
+        let clientName: CFString = "AudioKit" as CFString
 
         /// Array of MIDI In ports
         public var inputPorts = [MIDIUniqueID: MIDIPortRef]()
@@ -24,7 +24,7 @@
         public var virtualInputs = [MIDIPortRef()]
 
         /// MIDI In Port Name
-        internal let inputPortName: CFString = "MIDI In Port" as CFString
+        let inputPortName: CFString = "MIDI In Port" as CFString
 
         /// MIDI Out Port Reference
         public var outputPort = MIDIPortRef()
@@ -86,7 +86,7 @@
 
         // MARK: - SYSEX
 
-        internal var isReceivingSysEx: Bool = false
+        var isReceivingSysEx: Bool = false
         func startReceivingSysEx(with midiBytes: [MIDIByte]) {
             Log("Starting to receive SysEx", log: OSLog.midi)
             isReceivingSysEx = true
@@ -102,6 +102,6 @@
 
         // I don't want to break logic of existing code for receiving SysEx messages,
         // So I use separate var for processUMPSysExMessage method
-        internal var incomingUMPSysExMessage = [UInt8]()
+        var incomingUMPSysExMessage = [UInt8]()
     }
 #endif

@@ -33,7 +33,7 @@
         return port
     }
 
-    internal extension Collection where Index == Int {
+    extension Collection where Index == Int {
         var startIndex: Index {
             return 0
         }
@@ -43,7 +43,7 @@
         }
     }
 
-    internal struct MIDIDestinations: Collection {
+    struct MIDIDestinations: Collection {
         typealias Index = Int
         typealias Element = MIDIEndpointRef
 
@@ -78,7 +78,7 @@
         }
     }
 
-    internal func getMIDIObjectStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
+    func getMIDIObjectStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
         var string: Unmanaged<CFString>?
         MIDIObjectGetStringProperty(ref, property, &string)
         if let returnString = string?.takeRetainedValue() {
@@ -88,7 +88,7 @@
         }
     }
 
-    internal func getMIDIObjectIntegerProperty(ref: MIDIObjectRef, property: CFString) -> Int32 {
+    func getMIDIObjectIntegerProperty(ref: MIDIObjectRef, property: CFString) -> Int32 {
         var result: Int32 = 0
         MIDIObjectGetIntegerProperty(ref, property, &result)
         return result
